@@ -15,7 +15,6 @@ def write_ncdf(total_accumulation: float, accumulated_chill: nc.Dataset):
     :param total_accumulation: Total Accumulated Chill Hours
     :param accumulated_chill: NetCDF4 file
     """
-    total_accumulation *= 0.0
 
 
 def combine_data(station_tair: list, accumulated_chill: nc.Dataset) -> pd.DataFrame:
