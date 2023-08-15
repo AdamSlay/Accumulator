@@ -1,11 +1,15 @@
 from chill import calculate_chill
 from netcdf import read_ncdf, write_ncdf, combine_data
 from portal import fetch_parm
+from parm import Parm
 
 
 def main():
+
+    parms = Parm([('tair', "fahr"), ('wspd', 'mph')])  # this should be part of the config file
+
     # Fetch the latest tair data from DataPortal at the top of the hour for each station
-    station_tair = fetch_parm('tair')
+    station_tair = fetch_parm(parms)
 
     # Fetch the Accumulator NetCDF4 file
     accumulated_chill = read_ncdf()

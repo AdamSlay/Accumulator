@@ -1,11 +1,14 @@
 import csv
 import requests
 
+from parm import Parm
 
-def fetch_parm(parm: str):
+
+def fetch_parm(parms: Parm):
     # Make a GET request to a URL
-    parm = parm.strip().lower()
-    tair_latest = f"http://portal.dev.okmeso.net/data/api/rest/times/latest?parm={parm}:fahr&fmt=csv"
+    parm_string = 'parm='.join([f"{parm[0]}:{parm[1]}&" for parm in parms.parameters])
+    tair_latest = f"http://portal.dev.okmeso.net/data/api/rest/times/latest?parm={parm_string}fmt=csv"
+    print("URL:", tair_latest)  # Debugging
     response = requests.get(tair_latest)
 
     # Check the response status code
