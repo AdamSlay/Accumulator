@@ -10,13 +10,13 @@ def main():
     # Fetch the Accumulator NetCDF4 file
     accumulated_chill = read_ncdf()
 
-    # Combine data from the DataPortal and NetCDF4 file
+    # Combine data from the DataPortal and NetCDF4 file into a pandas DataFrame
     combined_data = combine_data(station_tair, accumulated_chill)
 
     # Calculate Chill Hours using the Utah Model
     total_accumulation = calculate_chill(combined_data)
 
-    # Save accumulated hours to NetCDF4 file
+    # Save accumulated hours to NetCDF4 fil
     write_ncdf(total_accumulation, accumulated_chill)
 
 
