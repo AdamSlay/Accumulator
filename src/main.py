@@ -8,7 +8,7 @@ def main():
     # Calculate Chill Hours using the Utah Model
     # Add the result to the accumulated chill hours
     # Save accumulated hours to NetCDF4 file
-    return
+    fetch_parm('tair')
 
 
 if __name__ == '__main__':
