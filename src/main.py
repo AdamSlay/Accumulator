@@ -1,14 +1,23 @@
-from chill import utah_model
+from chill import calculate_chill
+from netcdf import read_ncdf, write_ncdf, combine_data
 from portal import fetch_parm
 
 
 def main():
     # Fetch the latest tair data from DataPortal at the top of the hour for each station
-    # Fetch the latest accumulated chill hours from the NetCDF4 file for each station
+    station_tair = fetch_parm('tair')
+
+    # Fetch the Accumulator NetCDF4 file
+    accumulated_chill = read_ncdf()
+
+    # Combine data from the DataPortal and NetCDF4 file
+    combined_data = combine_data(station_tair, accumulated_chill)
+
     # Calculate Chill Hours using the Utah Model
-    # Add the result to the accumulated chill hours
+    total_accumulation = calculate_chill(combined_data)
+
     # Save accumulated hours to NetCDF4 file
-    fetch_parm('tair')
+    write_ncdf(total_accumulation, accumulated_chill)
 
 
 if __name__ == '__main__':

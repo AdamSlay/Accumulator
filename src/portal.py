@@ -12,7 +12,7 @@ def fetch_parm(parm: str):
     if response.status_code == 200:
         # Print the response content
         print(response.text)
-        with open('../data/latest_tair.csv', 'w') as f:
+        with open('../data/csv/latest_tair.csv', 'w') as f:
             f.write(response.text)
     else:
         print("Request failed with status code:", response.status_code)
