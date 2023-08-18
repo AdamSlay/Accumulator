@@ -57,5 +57,4 @@ def calculate_chill(stations: pd.DataFrame) -> pd.DataFrame:
         # update the accumulated chill hours using the Utah Model
         stations.loc[index, 'accumulated_chill'] = utah_model(tair, accumulated_chill)
 
-    print("updated_accumulation:", stations['accumulated_chill'])
     return stations
