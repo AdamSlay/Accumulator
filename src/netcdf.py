@@ -18,15 +18,12 @@ def write_ncdf(updated_accumulation: pd.DataFrame, accumulator_ncdf: nc.Dataset,
     :param accumulator_ncdf: Accumulator NetCDF4 file
     :param new_time_stamp: New time stamp to be added
     """
-    # Determine the current length of the time dimension
+    # Write the total accumulated chill hours to the NetCDF4 file at the new time stamp
     time_index = len(accumulator_ncdf.dimensions['time'])
-
-    # Write the total accumulated chill hours to the NetCDF4 file
     accumulator_ncdf['accumulated_chill'][time_index, :] = updated_accumulation['accumulated_chill'].values
-
-    # Update the 'time' variable with the new time stamp
     accumulator_ncdf['time'][time_index] = new_time_stamp
 
+    # Close the file
     accumulator_ncdf.close()
 
 

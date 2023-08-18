@@ -6,15 +6,12 @@ from datetime import datetime
 
 
 def main():
-    # Get the current time
-    current_time = datetime.now()
-
-    # Reference date for the time variable
-    reference_date = datetime(2000, 1, 1, 0, 0, 0)
-
     # Calculate the number of hours since the reference date
+    current_time = datetime.now()
+    reference_date = datetime(2000, 1, 1, 0, 0, 0)
     new_time_stamp = (current_time - reference_date).total_seconds() / 3600
 
+    # Define the parameters to fetch
     parms = Parm([('tair', "fahr")])  # this should be part of the config file
 
     # Fetch the latest tair data from DataPortal at the top of the hour for each station

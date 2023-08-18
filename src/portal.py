@@ -4,7 +4,7 @@ import requests
 from parm import Parm
 
 
-def fetch_parm(parms: Parm) -> pd.DataFrame:
+def fetch_parm(parms: Parm) -> pd.DataFrame or int:
     """
     Fetch the latest tair data from DataPortal at the top of the hour for each station
     :param parms: Parm object which contains the parameters to fetch
@@ -25,3 +25,4 @@ def fetch_parm(parms: Parm) -> pd.DataFrame:
     else:
         print("Request failed with status code:", response.status_code)
         print("\nResponse:", response.text)
+        return response.status_code
