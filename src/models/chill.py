@@ -44,13 +44,17 @@ def utah_model(tair: float, accumulated: float) -> float:
     return accumulated if accumulated > 0.0 else 0.0
 
 
-def calculate_chill(stations: pd.DataFrame):
+def calculate_chill(stations: pd.DataFrame) -> pd.DataFrame:
     """
     Iterate over the stations and calculate the chill hours for each
     :param stations: DataFrame of station data
-    :return:
+    :return: DataFrame of station data with updated chill hours
     """
     for station in stations:
         tair = float(station['tair'])
         accumulated_chill = float(station['accumulated_chill'])
+
+        # update the accumulated chill hours using the Utah Model
         station['accumulated_chill'] = utah_model(tair, accumulated_chill)
+
+    return stations
