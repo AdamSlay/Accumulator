@@ -1,8 +1,9 @@
-from src.models.chill import calculate_chill
-from netcdf import read_ncdf, write_ncdf, combine_datasets
-from portal import fetch_parm
-from parm import Parm
 from datetime import datetime
+
+from netcdf import read_ncdf, write_ncdf, combine_datasets
+from parm import Parm
+from portal import fetch_parm
+from src.models.chill import calculate_chill
 
 
 def main():
