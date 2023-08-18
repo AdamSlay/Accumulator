@@ -9,7 +9,7 @@ from src.models.chill import calculate_chill
 def main():
     # Calculate the number of hours since the reference date
     current_time = datetime.now()
-    reference_date = datetime(2000, 1, 1, 0, 0, 0)
+    reference_date = datetime(1990, 1, 1, 0, 0, 0)
     new_time_stamp = (current_time - reference_date).total_seconds() / 3600
 
     # Define the parameters to fetch

@@ -1,3 +1,4 @@
+import io
 import pandas as pd
 import requests
 
@@ -18,9 +19,12 @@ def fetch_parm(parms: Parm) -> pd.DataFrame or int:
 
     # Check the response status code
     if response.status_code == 200:
-        # Print the response content
         print("\nfetch_parm complete with status code:", response.status_code)
-        df = pd.read_csv('../data/csv/latest_tair.csv')
+
+        # Read the content of the response as CSV
+        content = response.content.decode('utf-8')
+        df = pd.read_csv(io.StringIO(content))
+
         return df
     else:
         print("Request failed with status code:", response.status_code)
