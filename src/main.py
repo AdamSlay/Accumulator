@@ -1,4 +1,4 @@
-from chill import calculate_chill
+from src.models.chill import calculate_chill
 from netcdf import read_ncdf, write_ncdf, combine_data
 from portal import fetch_parm
 from parm import Parm

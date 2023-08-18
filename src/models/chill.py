@@ -1,4 +1,3 @@
-# Calculate Chill Hours using the Utah Model
 import pandas as pd
 
 
@@ -46,6 +45,11 @@ def utah_model(tair: float, accumulated: float) -> float:
 
 
 def calculate_chill(stations: pd.DataFrame):
+    """
+    Iterate over the stations and calculate the chill hours for each
+    :param stations: DataFrame of station data
+    :return:
+    """
     for station in stations:
         tair = float(station['tair'])
         accumulated_chill = float(station['accumulated_chill'])
