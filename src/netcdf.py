@@ -5,6 +5,8 @@ import pandas as pd
 def read_ncdf(path: str) -> nc.Dataset:
     """
     Read the NetCDF4 file and return the dataset
+    :param path: Path to the NetCDF4 file
+    :return: NetCDF4 dataset
     """
     return nc.Dataset(path, 'a', format='NETCDF4')
 
