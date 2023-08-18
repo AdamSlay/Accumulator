@@ -38,10 +38,13 @@ def combine_datasets(station_tair: pd.DataFrame, accumulated_chill: nc.Dataset) 
     # Extract the 'stid' variable from the NetCDF4 data
     stids = [''.join(s.tostring().decode('utf-8')) for s in accumulated_chill['station_id']]
 
+    # Fetch the last value for each station
+    chill_values = [accumulated_chill['accumulated_chill'][-1, i] for i in range(len(stids))]
+
     # Create a DataFrame from the NetCDF4 data
     ncdf_df = pd.DataFrame({
         'stid': stids,
-        'accumulated_chill': accumulated_chill['accumulated_chill'][0]  # Change this index if necessary
+        'accumulated_chill': chill_values
     })
 
     # Merge the data
