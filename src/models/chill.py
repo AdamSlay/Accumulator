@@ -53,8 +53,12 @@ def calculate_chill(stations: pd.DataFrame) -> pd.DataFrame:
     for index, station in stations.iterrows():
         tair = float(station['tair'])
         accumulated_chill = float(station['accumulated_chill'])
+        if not tair:
+            print(f"tair is null for station {station['stid']}")
 
         # update the accumulated chill hours using the Utah Model
-        stations.loc[index, 'accumulated_chill'] = utah_model(tair, accumulated_chill)
+        new_chill_hours = utah_model(tair, accumulated_chill)
+
+        stations.loc[index, 'accumulated_chill'] = new_chill_hours
 
     return stations
