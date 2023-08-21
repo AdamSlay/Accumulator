@@ -16,6 +16,13 @@ def set_time_stamp() -> int:
 
 
 def run_selected_models(models: list, combined_data: pd.DataFrame):
+    """
+    Run the selected models and return the updated accumulation
+
+    :param models: list of models to run
+    :param combined_data: pd.DataFrame of combined datasets (DataPortal and NetCDF4)
+    :return: pd.DataFrame of updated dataset
+    """
     updated_accumulation = combined_data
     if 'utah' in models:
         updated_accumulation = calculate_chill_hours(combined_data, 'utah')
