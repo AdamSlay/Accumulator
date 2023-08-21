@@ -12,20 +12,18 @@ def fetch_parm(parms: Parm) -> pd.DataFrame or int:
     :return: pandas DataFrame of the latest tair data
     """
 
-    # Make a GET request to a URL
+    # TODO: use the config file to define the URL and format
+    # TODO: allow for start and end times to be passed in
     parm_string = 'parm='.join([f"{parm[0]}:{parm[1]}&" for parm in parms.parameters])
-    tair_latest = f"http://portal.dev.okmeso.net/data/api/rest/times/latest?parm={parm_string}fmt=csv"
-    response = requests.get(tair_latest)
+    latest_parms = f"http://portal.dev.okmeso.net/data/api/rest/times/latest?parm={parm_string}fmt=csv"
+    response = requests.get(latest_parms)
 
-    # Check the response status code
     if response.status_code == 200:
         print("\nfetch_parm complete with status code:", response.status_code)
-
-        # Read the content of the response as CSV
         content = response.content.decode('utf-8')
         df = pd.read_csv(io.StringIO(content))
-
         return df
+
     else:
         print("Request failed with status code:", response.status_code)
         print("\nResponse:", response.text)

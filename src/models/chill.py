@@ -38,13 +38,16 @@ def utah_model(tair: float, accumulated: float) -> float:
     elif 60.0 < tair <= 65.0:
         accumulated += -0.5
 
-    elif tair > 65.0:
+    elif 65.0 < tair < 999.0:
         accumulated += -1.0
+
+    else:
+        print("Invalid tair value:", tair)
 
     return accumulated if accumulated > 0.0 else 0.0
 
 
-def calculate_chill(stations: pd.DataFrame) -> pd.DataFrame:
+def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
     """
     Iterate over the stations and calculate the chill hours for each
     :param stations: DataFrame of station data
@@ -56,6 +59,7 @@ def calculate_chill(stations: pd.DataFrame) -> pd.DataFrame:
         if not tair:
             print(f"tair is null for station {station['stid']}")
 
+        # TODO: run the model specified in the config file
         # update the accumulated chill hours using the Utah Model
         new_chill_hours = utah_model(tair, accumulated_chill)
 
