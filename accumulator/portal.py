@@ -2,7 +2,7 @@ import io
 import pandas as pd
 import requests
 
-from parm import Parm
+from accumulator.parm import Parm
 
 
 def fetch_parm(parms: Parm) -> pd.DataFrame or int:

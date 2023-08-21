@@ -1,4 +1,4 @@
-from src.models.chill import utah_model
+from accumulator.models.chill import utah_model
 
 
 def test_utah_model_freezing():
