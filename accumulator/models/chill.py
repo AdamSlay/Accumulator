@@ -57,11 +57,8 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
     for index, station in stations.iterrows():
         tair = float(station['tair'])
         accumulated_chill = float(station['accumulated_chill'])
-        if not tair:
-            print(f"tair is null for station {station['stid']}")
 
         # TODO: run the model specified in the config file
-        # update the accumulated chill hours using the Utah Model
         new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
 
         stations.loc[index, 'accumulated_chill'] = new_chill_hours
