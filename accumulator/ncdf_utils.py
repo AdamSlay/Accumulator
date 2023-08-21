@@ -11,7 +11,7 @@ def read_ncdf(path: str) -> nc.Dataset:
     return nc.Dataset(path, 'a', format='NETCDF4')
 
 
-def write_ncdf(updated_accumulation: pd.DataFrame, accumulator_ncdf: nc.Dataset, new_time_stamp):
+def write_ncdf(updated_accumulation: pd.DataFrame, accumulator_ncdf: nc.Dataset, new_time_stamp: float) -> None:
     """
     Write the total accumulated chill hours to the NetCDF4 file
     :param updated_accumulation: Total Accumulated Chill Hours

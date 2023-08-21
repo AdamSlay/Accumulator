@@ -1,12 +1,12 @@
 from datetime import datetime
 
+from accumulator.models.chill import calculate_chill_hours
 from accumulator.ncdf_utils import read_ncdf, write_ncdf, combine_datasets
 from accumulator.parm import Parm
 from accumulator.portal import fetch_parm
-from accumulator.models.chill import calculate_chill_hours
 
 
-def set_time_stamp():
+def set_time_stamp() -> float:
     # Calculate the number of hours since the reference date
     current_time = datetime.now()
     reference_date = datetime(1990, 1, 1, 0, 0, 0)

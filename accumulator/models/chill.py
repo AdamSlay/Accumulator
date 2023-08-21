@@ -18,6 +18,7 @@ def utah_model(tair: float, accumulated: float, stid: str) -> float:
 
     :param tair: Air Temperature (F)
     :param accumulated: Previously Accumulated Chill Hours
+    :param stid: Station ID string for Warning
     :return: Total Accumulated Chill Hours
     """
     if tair <= 34.0:
