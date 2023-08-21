@@ -1,6 +1,8 @@
 import pandas as pd
 import netCDF4 as nc
 
+from accumulator.config import CHILL_HOURS_VAR
+
 
 def read_ncdf(path: str) -> nc.Dataset:
     """
@@ -21,7 +23,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame, accumulator_ncdf: nc.Dataset,
     # Write the total accumulated chill hours to the NetCDF4 file at the new time stamp
     time_index = len(accumulator_ncdf.dimensions['time'])
     # TODO: make 'accumulated_chill' a parameter in the config file so it can be changed easily
-    accumulator_ncdf['accumulated_chill'][time_index, :] = updated_accumulation['accumulated_chill'].values
+    accumulator_ncdf[CHILL_HOURS_VAR][time_index, :] = updated_accumulation[CHILL_HOURS_VAR].values
     accumulator_ncdf['time'][time_index] = new_time_stamp
 
     # Close the file
@@ -39,12 +41,12 @@ def combine_datasets(station_data: pd.DataFrame, accumulated_chill: nc.Dataset) 
     # Extract the 'stid' variable from the NetCDF4 data
     # Fetch the last value for each station
     stids = [''.join(s.tostring().decode('utf-8')) for s in accumulated_chill['station_id']]
-    chill_values = [accumulated_chill['accumulated_chill'][-1, i] for i in range(len(stids))]
+    chill_values = [accumulated_chill[CHILL_HOURS_VAR][-1, i] for i in range(len(stids))]
 
     # Create a DataFrame from the NetCDF4 data
     ncdf_df = pd.DataFrame({
         'stid': stids,
-        'accumulated_chill': chill_values
+        CHILL_HOURS_VAR: chill_values
     })
 
     # Merge the new ncdf_df and the station_data df

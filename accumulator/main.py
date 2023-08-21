@@ -9,7 +9,8 @@ from accumulator.portal import fetch_parm
 def set_time_stamp() -> int:
     """
     Calculate the number of hours since the reference date
-    :return: Hours since reference date as float
+
+    :return: Hours since reference date as int
     """
     current_time = datetime.now()
     reference_date = datetime(1990, 1, 1, 0, 0, 0)

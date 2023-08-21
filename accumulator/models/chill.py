@@ -1,18 +1,20 @@
 import pandas as pd
 
+from accumulator.config import CHILL_HOURS_VAR
+
 
 def utah_model(tair: float, accumulated: float, stid: str) -> float:
     """
     Calculate Chill Hours using the Utah Model (Richardson et al. 1974)
 
     Utah Model Accumulation Ranges:
-    T <= 34.0F = 0.0
+            T <= 34.0F = 0.0
     34.0F < T <= 36.0F = 0.5
     36.0F < T <= 48.0F = 1.0
     48.0F < T <= 54.0F = 0.5
     54.0F < T <= 60.0F = 0.0
     60.0F < T <= 65.0F = -0.5
-    65.0F < T = -1.0
+    65.0F < T          = -1.0
 
     Note: total accumulated hours cannot be negative
 
@@ -56,7 +58,7 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
     """
     for index, station in stations.iterrows():
         tair = float(station['tair'])
-        accumulated_chill = float(station['accumulated_chill'])
+        accumulated_chill = float(station[CHILL_HOURS_VAR])
 
         # TODO: run the model specified in the config file
         new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
