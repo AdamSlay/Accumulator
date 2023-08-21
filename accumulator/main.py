@@ -1,4 +1,4 @@
-from accumulator.config import ACC_DATASET_PATH, STATION_PARAMETERS, MODELS_TO_RUN
+from accumulator.config import ACC_DATASET_PATH, STATION_PARAMETERS
 from accumulator.ncdf_utils import read_ncdf, write_ncdf, combine_datasets
 from accumulator.parm import Parm
 from accumulator.portal import fetch_parm
@@ -19,7 +19,7 @@ def main():
     combined_data = combine_datasets(stations_csv, accumulator_ncdf)
 
     # Calculate Chill Hours using the Utah Model
-    updated_accumulation = run_selected_models(MODELS_TO_RUN, combined_data)
+    updated_accumulation = run_selected_models(combined_data)
 
     # Save accumulated hours to NetCDF4 file
     write_ncdf(updated_accumulation, accumulator_ncdf, new_time_stamp)
