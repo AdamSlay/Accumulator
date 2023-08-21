@@ -13,12 +13,13 @@ def main():
     parms = Parm(STATION_PARAMETERS)
     stations_csv = fetch_parm(parms)
 
+    # Read the NetCDF4 file
     accumulator_ncdf = read_ncdf(ACC_DATASET_PATH)
 
     # Combine data from the DataPortal and NetCDF4 file into a pandas DataFrame
     combined_data = combine_datasets(stations_csv, accumulator_ncdf)
 
-    # Calculate Chill Hours using the Utah Model
+    # Run the models
     updated_accumulation = run_selected_models(combined_data)
 
     # Save accumulated hours to NetCDF4 file
