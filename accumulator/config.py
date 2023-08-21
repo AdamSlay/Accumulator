@@ -1,5 +1,11 @@
 import os
+import json
 
 ACC_DATASET_PATH = os.environ.get('ACC_DATASET_PATH')
-MODELS_TO_RUN = os.environ.get('MODELS_TO_RUN')
 CHILL_HOURS_VAR = os.environ.get('CHILL_HOURS_VAR')
+
+models_to_run_string = os.environ.get('MODELS_TO_RUN')
+MODELS_TO_RUN = json.loads(models_to_run_string)
+
+station_parms_string = os.environ.get('STATION_PARAMETERS')
+STATION_PARAMETERS = json.loads(station_parms_string)

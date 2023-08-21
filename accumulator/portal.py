@@ -14,6 +14,7 @@ def fetch_parm(parms: Parm) -> pd.DataFrame or int:
 
     # TODO: use the config file to define the URL and format
     # TODO: allow for start and end times to be passed in
+    print(parms.parameters)
     parm_string = 'parm='.join([f"{parm[0]}:{parm[1]}&" for parm in parms.parameters])
     latest_parms = f"http://portal.dev.okmeso.net/data/api/rest/times/latest?parm={parm_string}fmt=csv"
     response = requests.get(latest_parms)

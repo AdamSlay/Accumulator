@@ -1,5 +1,8 @@
 from datetime import datetime
 
+import pandas as pd
+
+from accumulator.config import ACC_DATASET_PATH, STATION_PARAMETERS, MODELS_TO_RUN
 from accumulator.models.chill import calculate_chill_hours
 from accumulator.ncdf_utils import read_ncdf, write_ncdf, combine_datasets
 from accumulator.parm import Parm
@@ -18,24 +21,28 @@ def set_time_stamp() -> int:
     return int(new_time_stamp)
 
 
+def run_selected_models(models: list, combined_data: pd.DataFrame):
+    updated_accumulation = combined_data
+    if 'utah' in models:
+        updated_accumulation = calculate_chill_hours(combined_data, 'utah')
+    return updated_accumulation
+
+
 def main():
     # Set the time stamp
     new_time_stamp = set_time_stamp()
 
     # Fetch the latest tair data from DataPortal at the top of the hour for each station
-    # TODO: define parms based on the models specified in the config file
-    parms = Parm([('tair', "fahr")])
+    parms = Parm(STATION_PARAMETERS)
     stations_csv = fetch_parm(parms)
 
-    # TODO: use the config file to define the NetCDF4 file path
-    accumulator_ncdf = read_ncdf('./data/ncdf/accumulator.nc')
+    accumulator_ncdf = read_ncdf(ACC_DATASET_PATH)
 
     # Combine data from the DataPortal and NetCDF4 file into a pandas DataFrame
     combined_data = combine_datasets(stations_csv, accumulator_ncdf)
 
     # Calculate Chill Hours using the Utah Model
-    # TODO: run all models specified in the config file
-    updated_accumulation = calculate_chill_hours(combined_data)
+    updated_accumulation = run_selected_models(MODELS_TO_RUN, combined_data)
 
     # Save accumulated hours to NetCDF4 file
     write_ncdf(updated_accumulation, accumulator_ncdf, new_time_stamp)

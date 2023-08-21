@@ -50,18 +50,22 @@ def utah_model(tair: float, accumulated: float, stid: str) -> float:
     return accumulated if accumulated > 0.0 else 0.0
 
 
-def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
+def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.DataFrame:
     """
     Iterate over the stations and calculate the chill hours for each
     :param stations: DataFrame of station data
+    :param model: the model to use for calculation
     :return: DataFrame of station data with updated chill hours
     """
     for index, station in stations.iterrows():
         tair = float(station['tair'])
         accumulated_chill = float(station[CHILL_HOURS_VAR])
 
-        # TODO: run the model specified in the config file
-        new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
+        # for now there is only the one model
+        if model == 'utah':
+            new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
+        else:
+            new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
 
         stations.loc[index, 'accumulated_chill'] = new_chill_hours
 
