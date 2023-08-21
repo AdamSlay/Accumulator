@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def utah_model(tair: float, accumulated: float) -> float:
+def utah_model(tair: float, accumulated: float, stid: str) -> float:
     """
     Calculate Chill Hours using the Utah Model (Richardson et al. 1974)
 
@@ -42,7 +42,7 @@ def utah_model(tair: float, accumulated: float) -> float:
         accumulated += -1.0
 
     else:
-        print("Invalid tair value:", tair)
+        print(f"WARNING: Invalid tair value for {stid}:", tair)
 
     return accumulated if accumulated > 0.0 else 0.0
 
@@ -61,7 +61,7 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
 
         # TODO: run the model specified in the config file
         # update the accumulated chill hours using the Utah Model
-        new_chill_hours = utah_model(tair, accumulated_chill)
+        new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
 
         stations.loc[index, 'accumulated_chill'] = new_chill_hours
 

@@ -1,5 +1,5 @@
-import netCDF4 as nc
 import pandas as pd
+import netCDF4 as nc
 
 
 def read_ncdf(path: str) -> nc.Dataset:

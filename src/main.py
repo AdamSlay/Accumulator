@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from netcdf import read_ncdf, write_ncdf, combine_datasets
+from ncdf_utils import read_ncdf, write_ncdf, combine_datasets
 from parm import Parm
 from portal import fetch_parm
 from src.models.chill import calculate_chill_hours
@@ -24,7 +24,7 @@ def main():
     stations_csv = fetch_parm(parms)
 
     # TODO: use the config file to define the NetCDF4 file path
-    accumulator_ncdf = read_ncdf('../data/ncdf/accumulator.nc')
+    accumulator_ncdf = read_ncdf('./data/ncdf/accumulator.nc')
 
     # Combine data from the DataPortal and NetCDF4 file into a pandas DataFrame
     combined_data = combine_datasets(stations_csv, accumulator_ncdf)
