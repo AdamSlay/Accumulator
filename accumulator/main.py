@@ -1,7 +1,8 @@
 from accumulator.config import STATION_PARAMETERS
+from accumulator.ncdf_update import write_ncdf
 from accumulator.parm import Parm
 from accumulator.portal import fetch_parm
-from accumulator.utils import set_time_stamp, run_selected_models, write_ncdf
+from accumulator.utils import set_time_stamp, run_models
 
 
 def main():
@@ -13,7 +14,7 @@ def main():
     stations_csv = fetch_parm(parms)
 
     # Run the models
-    updated_accumulation = run_selected_models(stations_csv)
+    updated_accumulation = run_models(stations_csv)
 
     # Save accumulated hours to NetCDF4 file
     write_ncdf(updated_accumulation, new_time_stamp)

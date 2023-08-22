@@ -1,4 +1,5 @@
 import pandas as pd
+from accumulator.config import CHILL_HOURS_VAR
 
 
 def utah_model(tair: float, stid: str) -> float:
@@ -62,6 +63,6 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
         else:
             new_chill_hours = utah_model(tair, station['stid'])
 
-        stations.loc[index, 'accumulated_chill'] = new_chill_hours
+        stations.loc[index, CHILL_HOURS_VAR] = new_chill_hours
 
     return stations
