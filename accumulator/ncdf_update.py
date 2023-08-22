@@ -9,6 +9,7 @@ def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> 
     Update the accumulated chill hours using the following rules:
         1. If the existing value + update is less than 0, set it to 0
         2. Otherwise, set it to the existing value + update
+
     :param existing_values: What is already in the NetCDF4 file
     :param updates: The new values to be accumulated
     :return: The updated value

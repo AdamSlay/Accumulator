@@ -50,6 +50,7 @@ def utah_model(tair: float, stid: str) -> float:
 def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.DataFrame:
     """
     Iterate over the stations and calculate the chill hours for each
+
     :param stations: DataFrame of station data
     :param model: the model to use for calculation
     :return: DataFrame of station data with updated chill hours

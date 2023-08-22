@@ -2,16 +2,17 @@ import io
 import pandas as pd
 import requests
 
-from accumulator.config import DATAPORTAL_REQUEST_URL
+from accumulator.config import DATAPORTAL_REQUEST_URL, STATION_PARAMETERS
 from accumulator.parm import Parm
 
 
-def fetch_parm(parms: Parm) -> pd.DataFrame or int:
+def fetch_parm() -> pd.DataFrame or int:
     """
     Fetch the latest tair data from DataPortal at the top of the hour for each station
-    :param parms: Parm object which contains the parameters to fetch
+
     :return: pandas DataFrame of the latest tair data
     """
+    parms = Parm(STATION_PARAMETERS)
 
     # TODO: allow for start and end times to be passed in
     parm_string = 'parm='.join([f"{parm[0]}:{parm[1]}&" for parm in parms.parameters])
