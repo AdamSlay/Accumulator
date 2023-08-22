@@ -10,7 +10,7 @@ def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> 
         1. If the existing value + update is less than 0, set it to 0
         2. Otherwise, set it to the existing value + update
 
-    :param existing_values: What is already in the NetCDF4 file
+    :param existing_values: Existing value in the NetCDF4 file
     :param updates: The new values to be accumulated
     :return: The updated value
     """
@@ -31,11 +31,9 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
     :param new_time_stamp: New time stamp to be added to the NetCDF4 file
     """
 
-    # Open the NetCDF4 file
     ncdf_dataset = nc.Dataset(ACC_DATASET_PATH, 'a', format='NETCDF4')
     time_index = len(ncdf_dataset.dimensions['time'])
 
-    # Iterate through the variables and apply the corresponding update functions
     for var_name, update_function in update_functions.items():
         existing_values = ncdf_dataset[var_name][time_index - 1, :]
         updates = updated_accumulation[var_name].values
@@ -43,6 +41,4 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
         ncdf_dataset[var_name][time_index, :] = new_values
 
     ncdf_dataset['time'][time_index] = new_time_stamp
-
-    # Close the file
     ncdf_dataset.close()
