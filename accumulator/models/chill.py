@@ -1,9 +1,7 @@
 import pandas as pd
 
-from accumulator.config import CHILL_HOURS_VAR
 
-
-def utah_model(tair: float, accumulated: float, stid: str) -> float:
+def utah_model(tair: float, stid: str) -> float:
     """
     Calculate Chill Hours using the Utah Model (Richardson et al. 1974)
 
@@ -16,38 +14,36 @@ def utah_model(tair: float, accumulated: float, stid: str) -> float:
     60.0F < T <= 65.0F = -0.5
     65.0F < T          = -1.0
 
-    Note: total accumulated hours cannot be negative
-
     :param tair: Air Temperature (F)
-    :param accumulated: Previously Accumulated Chill Hours
     :param stid: Station ID string for Warning
     :return: Total Accumulated Chill Hours
     """
     if tair <= 34.0:
-        accumulated += 0.0
+        accumulated = 0.0
 
     elif 34.0 < tair <= 36.0:
-        accumulated += 0.5
+        accumulated = 0.5
 
     elif 36.0 < tair <= 48.0:
-        accumulated += 1.0
+        accumulated = 1.0
 
     elif 48.0 < tair <= 54.0:
-        accumulated += 0.5
+        accumulated = 0.5
 
     elif 54.0 < tair <= 60.0:
-        accumulated += 0.0
+        accumulated = 0.0
 
     elif 60.0 < tair <= 65.0:
-        accumulated += -0.5
+        accumulated = -0.5
 
     elif 65.0 < tair < 999.0:
-        accumulated += -1.0
+        accumulated = -1.0
 
     else:
         print(f"WARNING: Invalid tair value for {stid}:", tair)
+        accumulated = 0.0
 
-    return accumulated if accumulated > 0.0 else 0.0
+    return accumulated
 
 
 def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.DataFrame:
@@ -59,13 +55,12 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
     """
     for index, station in stations.iterrows():
         tair = float(station['tair'])
-        accumulated_chill = float(station[CHILL_HOURS_VAR])
 
         # for now there is only the one model
         if model == 'utah':
-            new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
+            new_chill_hours = utah_model(tair, station['stid'])
         else:
-            new_chill_hours = utah_model(tair, accumulated_chill, station['stid'])
+            new_chill_hours = utah_model(tair, station['stid'])
 
         stations.loc[index, 'accumulated_chill'] = new_chill_hours
 

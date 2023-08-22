@@ -1,8 +1,7 @@
-from accumulator.config import ACC_DATASET_PATH, STATION_PARAMETERS
-from accumulator.ncdf_utils import read_ncdf, write_ncdf, combine_datasets
+from accumulator.config import STATION_PARAMETERS
 from accumulator.parm import Parm
 from accumulator.portal import fetch_parm
-from accumulator.utils import set_time_stamp, run_selected_models
+from accumulator.utils import set_time_stamp, run_selected_models, write_ncdf
 
 
 def main():
@@ -13,17 +12,11 @@ def main():
     parms = Parm(STATION_PARAMETERS)
     stations_csv = fetch_parm(parms)
 
-    # Read the NetCDF4 file
-    accumulator_ncdf = read_ncdf(ACC_DATASET_PATH)
-
-    # Combine data from the DataPortal and NetCDF4 file into a pandas DataFrame
-    combined_data = combine_datasets(stations_csv, accumulator_ncdf)
-
     # Run the models
-    updated_accumulation = run_selected_models(combined_data)
+    updated_accumulation = run_selected_models(stations_csv)
 
     # Save accumulated hours to NetCDF4 file
-    write_ncdf(updated_accumulation, accumulator_ncdf, new_time_stamp)
+    write_ncdf(updated_accumulation, new_time_stamp)
 
 
 if __name__ == '__main__':
