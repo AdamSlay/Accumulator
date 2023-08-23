@@ -14,7 +14,7 @@ def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> 
     :param updates: The new values to be accumulated
     :return: The updated value
     """
-    return np.maximum(existing_values + updates, 0)
+    return np.maximum(existing_values + updates, 0.0)
 
 
 # Function Map for updating the NetCDF4 file with each model
