@@ -56,8 +56,13 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
     :return: DataFrame of station data with updated chill hours
     """
     for index, station in stations.iterrows():
-        tair = float(station['tair'])
-
+        try:
+            tair = float(station['tair'])
+        except ValueError:
+            print(f"Invalid temperature value for {station['stid']}: {station['tair']}")
+            stations.loc[index, CHILL_HOURS_VAR] = 0.0
+            continue
+       
         # for now there is only the one model
         if model == 'utah':
             new_chill_hours = utah_model(tair, station['stid'])

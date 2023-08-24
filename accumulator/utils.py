@@ -29,9 +29,12 @@ def run_models(combined_data: pd.DataFrame):
     """
     updated_accumulation = combined_data
     for model in MODELS_TO_RUN:
-        if model == 'utah':
-            updated_accumulation = calculate_chill_hours(combined_data, 'utah')
-        if model == 'grape_rot':
-            pass  # example of a model that has not been implemented yet
+        try:
+            if model == 'utah':
+                updated_accumulation = calculate_chill_hours(combined_data, 'utah')
+            if model == 'grape_rot':
+                pass  # example of a model that has not been implemented yet
+        except Exception as e:
+            print(f"Failed to run model {model} with error {e}")
 
     return updated_accumulation
