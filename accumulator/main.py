@@ -3,12 +3,12 @@ from logging.handlers import TimedRotatingFileHandler
 
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_parm
-from accumulator.utils import run_models, set_time_stamp
+from accumulator.utils import set_time_stamp, run_models
 
 
 def main():
     handler = TimedRotatingFileHandler('accumulator.log', when='D', interval=30, backupCount=5)
-    logging.basicConfig(level=logging.INFO, handlers=[handler])
+    logging.basicConfig(level=logging.INFO, handlers=[handler], format='%(levelname)s:%(name)s:%(message)s')
 
     try:
         stations_csv = fetch_parm()
@@ -18,7 +18,5 @@ def main():
     except Exception as e:
         logging.error(f"An error occurred: {e}")
 
-
 if __name__ == '__main__':
-    # test github actions
     main()

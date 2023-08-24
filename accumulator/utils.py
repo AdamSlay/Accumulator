@@ -18,6 +18,8 @@ def set_time_stamp() -> int:
     current_time = datetime.now()
     reference_date = datetime(1990, 1, 1, 0, 0, 0)
     new_time_stamp = (current_time - reference_date).total_seconds() // 3600  # 3600 seconds in an hour
+    
+    logger.info(f"New time stamp: {new_time_stamp}")
     return int(new_time_stamp)
 
 
@@ -31,13 +33,15 @@ def run_models(combined_data: pd.DataFrame):
     :return: pd.DataFrame of updated dataset
     """
     updated_accumulation = combined_data
-    for model in MODELS_TO_RUN:
+    for i, model in enumerate(MODELS_TO_RUN):
+        logger.info(f"Running model {i+1} of {len(MODELS_TO_RUN)}: {model}")
         try:
             if model == 'utah':
                 updated_accumulation = calculate_chill_hours(combined_data, 'utah')
             if model == 'grape_rot':
                 pass  # example of a model that has not been implemented yet
         except Exception as e:
-            logger.error(f"Failed to run model {model} with error {e}")
-
+            logger.error(f"Failed to run model {model}: {e}")
+    
+    logger.info("Finished running models")
     return updated_accumulation

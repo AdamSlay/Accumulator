@@ -49,6 +49,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
     :param updated_accumulation: Total Accumulated Chill Hours
     :param new_time_stamp: New time stamp to be added to the NetCDF4 file
     """
+    logger.info("Writing to NetCDF4 file")
 
     try:
         ncdf_dataset = open_ncdf()
@@ -58,7 +59,8 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
 
     time_index = len(ncdf_dataset.dimensions['time'])
 
-    for var_name, update_function in update_functions.items():
+    for i, (var_name, update_function) in enumerate(update_functions.items()):
+        logger.info(f"Updating variable {i+1} of {len(update_functions)}: {var_name}")
         try:
             existing_values = ncdf_dataset[var_name][time_index - 1, :]
             updates = updated_accumulation[var_name].values
@@ -71,3 +73,4 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
 
     ncdf_dataset['time'][time_index] = new_time_stamp
     ncdf_dataset.close()
+    logger.info("Finished writing to NetCDF4 file")

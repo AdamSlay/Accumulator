@@ -45,7 +45,7 @@ def utah_model(tair: float, stid: str) -> float:
         accumulated = -1.0
 
     else:
-        logger.warning(f"WARNING: Invalid tair value for {stid}:", tair)
+        logger.warning(f"WARNING: Invalid tair value for {stid}: {tair}")
         accumulated = 0.0
 
     return accumulated
@@ -59,6 +59,9 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
     :param model: the model to use for calculation
     :return: DataFrame of station data with updated chill hours
     """
+
+    logger.debug(f"Calculating chill hours using {model} model")
+    
     for index, station in stations.iterrows():
         try:
             tair = float(station['tair'])
@@ -74,5 +77,7 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
             new_chill_hours = utah_model(tair, station['stid'])
 
         stations.loc[index, CHILL_HOURS_VAR] = new_chill_hours
-
+        logger.debug(f"New chill hours for {station['stid']}: {new_chill_hours}")
+    
+    logger.debug("Finished calculating chill hours")
     return stations
