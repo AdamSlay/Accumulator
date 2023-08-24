@@ -3,7 +3,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_parm
-from accumulator.utils import set_time_stamp, run_models
+from accumulator.utils import run_models, set_time_stamp
 
 
 def main():

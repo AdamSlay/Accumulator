@@ -1,4 +1,5 @@
 import pandas as pd
+
 from accumulator.config import CHILL_HOURS_VAR
 
 

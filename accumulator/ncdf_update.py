@@ -1,7 +1,8 @@
 import netCDF4 as nc
 import numpy as np
 import pandas as pd
-from accumulator.config import CHILL_HOURS_VAR, ACC_DATASET_PATH
+
+from accumulator.config import ACC_DATASET_PATH, CHILL_HOURS_VAR
 
 
 def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> pd.DataFrame:

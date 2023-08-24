@@ -1,7 +1,8 @@
 import io
+import time
+
 import pandas as pd
 import requests
-import time
 
 from accumulator.config import DATAPORTAL_REQUEST_URL, STATION_PARAMETERS
 from accumulator.parm import Parm
