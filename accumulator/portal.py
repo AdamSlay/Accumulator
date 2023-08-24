@@ -1,4 +1,5 @@
 import io
+import logging
 import time
 
 import pandas as pd
@@ -6,6 +7,8 @@ import requests
 
 from accumulator.config import DATAPORTAL_REQUEST_URL, STATION_PARAMETERS
 from accumulator.parm import Parm
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_parm() -> pd.DataFrame:
@@ -31,7 +34,7 @@ def fetch_parm() -> pd.DataFrame:
             df = pd.read_csv(io.StringIO(content))
             return df
         except (requests.exceptions.RequestException, UnicodeDecodeError, pd.errors.ParserError) as e:
-            print(f"Error occurred: {e}. Retry {i+1} of {max_retries}")
+            logger.error(f"Error occurred: {e}. Retry {i+1} of {max_retries}")
             time.sleep(retry_delay)
 
     raise Exception("Request failed after maximum retries")

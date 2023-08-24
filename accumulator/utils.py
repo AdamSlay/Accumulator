@@ -1,9 +1,12 @@
 from datetime import datetime
+import logging
 
 import pandas as pd
 
 from accumulator.config import MODELS_TO_RUN
 from accumulator.models.chill import calculate_chill_hours
+
+logger = logging.getLogger(__name__)
 
 
 def set_time_stamp() -> int:
@@ -35,6 +38,6 @@ def run_models(combined_data: pd.DataFrame):
             if model == 'grape_rot':
                 pass  # example of a model that has not been implemented yet
         except Exception as e:
-            print(f"Failed to run model {model} with error {e}")
+            logger.error(f"Failed to run model {model} with error {e}")
 
     return updated_accumulation

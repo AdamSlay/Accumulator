@@ -1,5 +1,9 @@
-import os
 import json
+import logging
+import os
+
+logger = logging.getLogger(__name__)
+
 
 # Path to the NetCDF4 dataset file
 ACC_DATASET_PATH = os.environ.get('ACC_DATASET_PATH', 'default_path')
@@ -15,7 +19,7 @@ models_to_run_string = os.environ.get('MODELS_TO_RUN', '[]')
 try:
     MODELS_TO_RUN = json.loads(models_to_run_string)
 except json.JSONDecodeError:
-    print(f"Invalid JSON for MODELS_TO_RUN: {models_to_run_string}")
+    logger.error(f"Invalid JSON for MODELS_TO_RUN: {models_to_run_string}")
     MODELS_TO_RUN = []
 
 # List of station parameters
@@ -23,5 +27,5 @@ station_parms_string = os.environ.get('STATION_PARAMETERS', '[]')
 try:
     STATION_PARAMETERS = json.loads(station_parms_string)
 except json.JSONDecodeError:
-    print(f"Invalid JSON for STATION_PARAMETERS: {station_parms_string}")
+    logger.error(f"Invalid JSON for STATION_PARAMETERS: {station_parms_string}")
     STATION_PARAMETERS = []

@@ -1,8 +1,11 @@
+import logging
 import netCDF4 as nc
 import numpy as np
 import pandas as pd
 
 from accumulator.config import ACC_DATASET_PATH, CHILL_HOURS_VAR
+
+logger = logging.getLogger(__name__)
 
 
 def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> pd.DataFrame:
@@ -50,7 +53,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
     try:
         ncdf_dataset = open_ncdf()
     except RuntimeError as e:
-        print(e)
+        logger.error(e)
         return
 
     time_index = len(ncdf_dataset.dimensions['time'])
@@ -62,9 +65,9 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
             new_values = update_function(existing_values, updates)
             ncdf_dataset[var_name][time_index, :] = new_values
         except KeyError:
-            print(f"Variable {var_name} not found in the dataset")
+            logger.error(f"Variable {var_name} not found in the dataset")
         except IndexError:
-            print(f"Index error occurred while accessing the data of {var_name}")
+            logger.error(f"Index error occurred while accessing the data of {var_name}")
 
     ncdf_dataset['time'][time_index] = new_time_stamp
     ncdf_dataset.close()

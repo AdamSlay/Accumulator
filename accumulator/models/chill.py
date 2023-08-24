@@ -1,6 +1,9 @@
+import logging
 import pandas as pd
 
 from accumulator.config import CHILL_HOURS_VAR
+
+logger = logging.getLogger(__name__)
 
 
 def utah_model(tair: float, stid: str) -> float:
@@ -42,7 +45,7 @@ def utah_model(tair: float, stid: str) -> float:
         accumulated = -1.0
 
     else:
-        print(f"WARNING: Invalid tair value for {stid}:", tair)
+        logger.warning(f"WARNING: Invalid tair value for {stid}:", tair)
         accumulated = 0.0
 
     return accumulated
@@ -60,7 +63,7 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
         try:
             tair = float(station['tair'])
         except ValueError:
-            print(f"Invalid temperature value for {station['stid']}: {station['tair']}")
+            logger.error(f"Invalid temperature value for {station['stid']}: {station['tair']}")
             stations.loc[index, CHILL_HOURS_VAR] = 0.0
             continue
        
