@@ -1,4 +1,4 @@
-name: Python application test
+name: Accumulator Unit Tests
 
 on: [push]
 
