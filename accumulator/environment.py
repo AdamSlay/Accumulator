@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import logging
 import os
@@ -7,7 +7,10 @@ import pytz
 
 log = logging.getLogger(__name__)
 
+# Set the time stamp for the most recent hour(unless the current time is within 10 minutes of the top of the hour)
 now_utc = datetime.now(pytz.timezone('UTC'))
+if now_utc.minute <= 10:
+    now_utc = now_utc - timedelta(hours=1)
 DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
 
 # Path to the NetCDF4 dataset file

@@ -43,6 +43,7 @@ def fetch_station_data():
         log.error(f"An error occurred while fetching station data: {e}")
         raise e
 
+
 def build_query():
     """
     Build the query to send to the DataServer based on the environment variables
@@ -96,4 +97,5 @@ def convert_resp_to_df(response):
     data = pd.DataFrame()
     for parameter, values in response['response'].items():
         data[parameter] = values['data']
-    return data.set_index('stid')
+    data = data.set_index('stid')
+    return data

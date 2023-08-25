@@ -1,30 +1,54 @@
-import io
+from unittest import mock
+
 import pandas as pd
 
-from unittest import mock
-from accumulator.portal import fetch_station_data
+from accumulator.portal import fetch_station_data, convert_resp_to_df
 
 
-# @mock.patch('pandas.read_csv')
-# @mock.patch('requests.get')
-# def test_fetch_parm(mock_get, mock_read_csv):
-#     # Create a mock response
-#     mock_response = mock.MagicMock()
-#     mock_response.content.decode.return_value = 'test_content'
-#     mock_get.return_value = mock_response
-#
-#     # Create a mock DataFrame
-#     mock_df = pd.DataFrame()
-#     mock_read_csv.return_value = mock_df
-#
-#     # Call the function
-#     result = fetch_station_data_dep()
-#
-#     # Check that the function interacted with the mocks as expected
-#     assert mock_get.call_count == 1
-#     assert mock_response.content.decode.call_count == 1
-#     assert mock_read_csv.call_count == 1
-#     assert isinstance(mock_read_csv.call_args[0][0], io.StringIO)
-#
-#     # Check that the function returned the mock DataFrame
-#     pd.testing.assert_frame_equal(result, mock_df)
+@mock.patch('socket.socket')
+def test_fetch_station_data(mock_socket):
+    # Create a mock socket instance
+    mock_socket_instance = mock.MagicMock()
+    mock_socket.return_value = mock_socket_instance
+
+    # Mock the response from the socket
+    mock_socket_instance.recv.side_effect = [
+        b'{"success": true, "response": {"stid": {"data": ["acme", "adax"]}, "relh": {"data": [26.1726, 25.8055]}, '
+        b'"tair": {"data": [103.298, 104.828]}}}',
+        b'']
+
+    # Call the function
+    result = fetch_station_data()
+
+    # Check that the function interacted with the mock socket as expected
+    assert mock_socket.call_count == 1
+    assert mock_socket_instance.connect.call_count == 1
+    assert mock_socket_instance.sendall.call_count == 1
+    assert mock_socket_instance.recv.call_count == 2  # Once for the response, once for the empty string
+
+    # Create the expected DataFrame
+    expected_df = pd.DataFrame(
+        {"stid": ["acme", "adax"], "relh": [26.1726, 25.8055], "tair": [103.298, 104.828]}).set_index('stid')
+
+    # Check that the function returned the correct DataFrame
+    pd.testing.assert_frame_equal(result, expected_df)
+
+
+def test_convert_resp_to_df():
+    # Mock the response from the DataServer
+    response = {"success": True,
+                "response": {"stid": {"data": ["acme", "adax"]},
+                             "relh": {"data": [26.1726, 25.8055]},
+                             "tair": {"data": [103.298, 104.828]}
+                             }
+                }
+
+    # Call the function
+    result = convert_resp_to_df(response)
+
+    # Create the expected DataFrame
+    expected_df = pd.DataFrame(
+        {"stid": ["acme", "adax"], "relh": [26.1726, 25.8055], "tair": [103.298, 104.828]}).set_index('stid')
+
+    # Check that the function returned the correct DataFrame
+    pd.testing.assert_frame_equal(result, expected_df)
