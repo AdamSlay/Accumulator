@@ -83,7 +83,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
         log.error(e)
         return
 
-    time_index = len(ncdf_dataset.dimensions['time'])
+    time_index = len(ncdf_dataset.dimensions['time'])  # len of time dimension = next index to append to
 
     for i, (var_name, update_function) in enumerate(update_functions.items()):
         log.info(f"Updating variable {i + 1} of {len(update_functions)}: {var_name}")
