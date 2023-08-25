@@ -4,7 +4,7 @@ import netCDF4 as nc
 import numpy as np
 import pandas as pd
 
-from accumulator.config import ACC_DATASET_PATH, CHILL_HOURS_VAR
+from accumulator.environment import ACC_DATASET_PATH, CHILL_HOURS_VAR
 
 log = logging.getLogger(__name__)
 

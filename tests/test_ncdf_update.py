@@ -1,7 +1,7 @@
 import pandas as pd
 from unittest import mock
 
-from accumulator.config import ACC_DATASET_PATH
+from accumulator.environment import ACC_DATASET_PATH
 from accumulator.ncdf_update import chill_hours_update, open_ncdf, write_ncdf
 
 

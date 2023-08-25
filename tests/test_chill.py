@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from accumulator.config import CHILL_HOURS_VAR
+from accumulator.environment import CHILL_HOURS_VAR
 from accumulator.models.chill import calculate_chill_hours, utah_model
 
 

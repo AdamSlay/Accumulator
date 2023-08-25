@@ -1,9 +1,9 @@
 import logging
 import pandas as pd
 
-from accumulator.config import CHILL_HOURS_VAR
+from accumulator.environment import CHILL_HOURS_VAR
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def utah_model(tair: float, stid: str) -> float:
@@ -45,28 +45,29 @@ def utah_model(tair: float, stid: str) -> float:
         accumulated = -1.0
 
     else:
-        log.warning(f"Invalid tair value for {stid}: {tair}")
+        logger.warning(f"Invalid tair value for {stid}: {tair}")
         accumulated = 0.0
 
     return accumulated
 
 
-def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.DataFrame:
+def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
     """
     Iterate over the stations and calculate the chill hours for each
 
     :param stations: DataFrame of station data
-    :param model: the model to use for calculation
     :return: DataFrame of station data with updated chill hours
     """
 
-    log.debug(f"Calculating chill hours using {model} model")
+    # TODO: allow for different models to be used based on model config in Accumulator/etc/config/chill_hours.yaml
+    model = 'utah'
+    logger.debug(f"Calculating chill hours using {model} model")
     
     for index, station in stations.iterrows():
         try:
             tair = float(station['tair'])
         except ValueError:
-            log.error(f"Invalid temperature value for {station['stid']}: {station['tair']}")
+            logger.error(f"Invalid temperature value for {station['stid']}: {station['tair']}")
             stations.loc[index, CHILL_HOURS_VAR] = 0.0
             continue
        
@@ -77,7 +78,7 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
             new_chill_hours = utah_model(tair, station['stid'])
 
         stations.loc[index, CHILL_HOURS_VAR] = new_chill_hours
-        log.debug(f"New chill hours for {station['stid']}: {new_chill_hours}")
+        logger.debug(f"New chill hours for {station['stid']}: {new_chill_hours}")
     
-    log.debug("Finished calculating chill hours")
+    logger.debug("Finished calculating chill hours")
     return stations

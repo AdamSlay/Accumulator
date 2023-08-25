@@ -1,10 +1,15 @@
 import logging
 import pandas as pd
 
-from accumulator.config import MODELS_TO_RUN
+from accumulator.environment import MODELS_TO_RUN
 from accumulator.models.chill import calculate_chill_hours
 
 log = logging.getLogger(__name__)
+
+
+MODEL_FUNCTIONS = {
+    'chill_hours': calculate_chill_hours
+}
 
 
 def run_models(combined_data: pd.DataFrame):
@@ -20,10 +25,9 @@ def run_models(combined_data: pd.DataFrame):
     for i, model in enumerate(MODELS_TO_RUN):
         log.info(f"Running model {i + 1} of {len(MODELS_TO_RUN)}: {model}")
         try:
-            if model == 'utah':
-                updated_accumulation = calculate_chill_hours(combined_data, 'utah')
-            elif model == 'grape_rot':
-                pass  # example of a model that has not been implemented yet
+            model_function = MODEL_FUNCTIONS.get(model)
+            if model_function:
+                updated_accumulation = model_function(combined_data)
             else:
                 log.error(f"Model \"{model}\" not found")
         except Exception as e:
