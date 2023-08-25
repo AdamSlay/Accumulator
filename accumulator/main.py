@@ -1,9 +1,9 @@
 import logging
 
 from accumulator.logger import init_logging
+from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_parm
-from accumulator.utils import set_time_stamp, run_models
 
 
 def main():
@@ -14,8 +14,7 @@ def main():
     try:
         stations_csv = fetch_parm()
         updated_accumulation = run_models(stations_csv)
-        new_time_stamp = set_time_stamp()
-        write_ncdf(updated_accumulation, new_time_stamp)
+        write_ncdf(updated_accumulation)
     except Exception as e:
         log.error(f"An error occurred: {e}")
 

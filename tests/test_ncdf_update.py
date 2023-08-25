@@ -1,7 +1,7 @@
 import pandas as pd
 from unittest import mock
 
-from accumulator.config import ACC_DATASET_PATH, CHILL_HOURS_VAR
+from accumulator.config import ACC_DATASET_PATH
 from accumulator.ncdf_update import chill_hours_update, open_ncdf, write_ncdf
 
 
@@ -36,8 +36,7 @@ def test_write_ncdf(mock_nc_dataset):
     stations = pd.DataFrame(station_data)
 
     # Call the function
-    time_stamp = 123456  # example time_stamp
-    write_ncdf(stations, time_stamp)
+    write_ncdf(stations)
 
     # Check that the function interacted with the mock dataset as expected
     assert mock_nc_dataset.call_count == 1

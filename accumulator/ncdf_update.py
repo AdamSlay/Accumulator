@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import netCDF4 as nc
 import numpy as np
@@ -27,6 +28,20 @@ update_functions = {
 }
 
 
+def set_time_stamp() -> int:
+    """
+    Calculate the number of hours since the reference date
+
+    :return: Hours since reference date as int
+    """
+    current_time = datetime.now()
+    reference_date = datetime(1990, 1, 1, 0, 0, 0)
+    new_time_stamp = (current_time - reference_date).total_seconds() // 3600  # 3600 seconds in an hour
+
+    log.info(f"New time stamp: {new_time_stamp}")
+    return int(new_time_stamp)
+
+
 def open_ncdf() -> nc.Dataset:
     """
     Open the NetCDF4 file specified by ACC_DATASET_PATH for writing
@@ -42,12 +57,11 @@ def open_ncdf() -> nc.Dataset:
     return ncdf_dataset
 
 
-def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
+def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
     """
     Iterate through the accumulated variables and apply the corresponding update function
 
     :param updated_accumulation: Total Accumulated Chill Hours
-    :param new_time_stamp: New time stamp to be added to the NetCDF4 file
     """
     log.info(f"Writing data to NetCDF4 file: {ACC_DATASET_PATH}")
 
@@ -71,6 +85,6 @@ def write_ncdf(updated_accumulation: pd.DataFrame, new_time_stamp: int) -> None:
         except IndexError:
             log.error(f"Index error occurred while accessing the data of {var_name}")
 
-    ncdf_dataset['time'][time_index] = new_time_stamp
+    ncdf_dataset['time'][time_index] = set_time_stamp()
     ncdf_dataset.close()
     log.info("Closing NetCDF4 file")
