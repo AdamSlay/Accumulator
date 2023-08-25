@@ -3,7 +3,7 @@ import logging
 from accumulator.utils.logger import init_logging
 from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
-from accumulator.portal import fetch_station_data
+from accumulator.portal import fetch_station_data, data_server_fetch
 
 
 def main():
@@ -13,6 +13,7 @@ def main():
     log.info("Starting accumulator")
     try:
         station_obs_data = fetch_station_data()
+        data_server_fetch()
         updated_accum_data = run_models(station_obs_data)
         write_ncdf(updated_accum_data)
     except Exception as e:
