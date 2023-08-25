@@ -5,7 +5,7 @@ from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_parm
 
-
+# test
 def main():
     init_logging()
     log = logging.getLogger(__name__)
