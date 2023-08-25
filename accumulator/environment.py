@@ -23,7 +23,7 @@ DATAPORTAL_REQUEST_URL = os.environ.get('DATAPORTAL_REQUEST_URL', 'default_url')
 DATASERVER_IP = os.environ.get('DATASERVER_IP', 'default_ip')
 
 # DataServer Port
-DATASERVER_PORT = int(os.environ.get('DATASERVER_PORT', 'default_port'))
+DATASERVER_PORT = int(os.environ.get('DATASERVER_PORT', 0))
 
 # DataServer Dataset
 DATASERVER_DATASET = os.environ.get('DATASERVER_DATASET', 'default_dataset')
