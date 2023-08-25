@@ -1,9 +1,14 @@
+from datetime import datetime
 import json
 import logging
 import os
 
+import pytz
+
 log = logging.getLogger(__name__)
 
+now_utc = datetime.now(pytz.timezone('UTC'))
+DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
 
 # Path to the NetCDF4 dataset file
 ACC_DATASET_PATH = os.environ.get('ACC_DATASET_PATH', 'default_path')
@@ -13,6 +18,18 @@ CHILL_HOURS_VAR = os.environ.get('CHILL_HOURS_VAR', 'default_var')
 
 # URL for the DataPortal request
 DATAPORTAL_REQUEST_URL = os.environ.get('DATAPORTAL_REQUEST_URL', 'default_url')
+
+# DataServer IP
+DATASERVER_IP = os.environ.get('DATASERVER_IP', 'default_ip')
+
+# DataServer Port
+DATASERVER_PORT = int(os.environ.get('DATASERVER_PORT', 'default_port'))
+
+# DataServer Dataset
+DATASERVER_DATASET = os.environ.get('DATASERVER_DATASET', 'default_dataset')
+
+# DataServer Request Type
+DATASERVER_REQ_TYPE = os.environ.get('DATASERVER_REQ_TYPE', 'default_request_type')
 
 # List of models to run
 models_to_run_string = os.environ.get('MODELS_TO_RUN', '[]')
