@@ -11,7 +11,7 @@ from accumulator.parm import Parm
 log = logging.getLogger(__name__)
 
 
-def fetch_parm() -> pd.DataFrame:
+def fetch_station_data() -> pd.DataFrame:
     """
     Fetch the latest tair data from DataPortal at the top of the hour for each station
 

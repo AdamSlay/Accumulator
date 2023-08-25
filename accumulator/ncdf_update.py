@@ -42,6 +42,18 @@ def set_time_stamp() -> int:
     return int(new_time_stamp)
 
 
+def update_variable(dataset, var_name, update_function, updated_accumulation, time_index):
+    try:
+        existing_values = dataset[var_name][time_index - 1, :]
+        updates = updated_accumulation[var_name].values
+        new_values = update_function(existing_values, updates)
+        dataset[var_name][time_index, :] = new_values
+    except KeyError:
+        log.error(f"Variable {var_name} not found in the dataset")
+    except IndexError:
+        log.error(f"Index error occurred while accessing the data of {var_name}")
+
+
 def open_ncdf() -> nc.Dataset:
     """
     Open the NetCDF4 file specified by ACC_DATASET_PATH for writing
@@ -75,15 +87,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
 
     for i, (var_name, update_function) in enumerate(update_functions.items()):
         log.info(f"Updating variable {i + 1} of {len(update_functions)}: {var_name}")
-        try:
-            existing_values = ncdf_dataset[var_name][time_index - 1, :]
-            updates = updated_accumulation[var_name].values
-            new_values = update_function(existing_values, updates)
-            ncdf_dataset[var_name][time_index, :] = new_values
-        except KeyError:
-            log.error(f"Variable {var_name} not found in the dataset")
-        except IndexError:
-            log.error(f"Index error occurred while accessing the data of {var_name}")
+        update_variable(ncdf_dataset, var_name, update_function, updated_accumulation, time_index)
 
     ncdf_dataset['time'][time_index] = set_time_stamp()
     ncdf_dataset.close()

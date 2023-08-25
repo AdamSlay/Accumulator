@@ -3,7 +3,7 @@ import logging
 from accumulator.logger import init_logging
 from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
-from accumulator.portal import fetch_parm
+from accumulator.portal import fetch_station_data
 
 
 def main():
@@ -12,9 +12,9 @@ def main():
 
     log.info("Starting accumulator")
     try:
-        stations_csv = fetch_parm()
-        updated_accumulation = run_models(stations_csv)
-        write_ncdf(updated_accumulation)
+        station_obs_data = fetch_station_data()
+        updated_accum_data = run_models(station_obs_data)
+        write_ncdf(updated_accum_data)
     except Exception as e:
         log.error(f"An error occurred: {e}")
 

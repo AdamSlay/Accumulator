@@ -24,6 +24,8 @@ def run_models(combined_data: pd.DataFrame):
                 updated_accumulation = calculate_chill_hours(combined_data, 'utah')
             if model == 'grape_rot':
                 pass  # example of a model that has not been implemented yet
+            else:
+                log.error(f"Model {model} not found")
         except Exception as e:
             log.error(f"Failed to run model {model}: {e}")
 

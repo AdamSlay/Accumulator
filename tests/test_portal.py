@@ -2,7 +2,7 @@ import io
 import pandas as pd
 
 from unittest import mock
-from accumulator.portal import fetch_parm
+from accumulator.portal import fetch_station_data
 
 
 @mock.patch('pandas.read_csv')
@@ -18,7 +18,7 @@ def test_fetch_parm(mock_get, mock_read_csv):
     mock_read_csv.return_value = mock_df
 
     # Call the function
-    result = fetch_parm()
+    result = fetch_station_data()
 
     # Check that the function interacted with the mocks as expected
     assert mock_get.call_count == 1
