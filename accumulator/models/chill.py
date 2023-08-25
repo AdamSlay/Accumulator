@@ -3,7 +3,7 @@ import pandas as pd
 
 from accumulator.config import CHILL_HOURS_VAR
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def utah_model(tair: float, stid: str) -> float:
@@ -45,7 +45,7 @@ def utah_model(tair: float, stid: str) -> float:
         accumulated = -1.0
 
     else:
-        logger.warning(f"WARNING: Invalid tair value for {stid}: {tair}")
+        log.warning(f"Invalid tair value for {stid}: {tair}")
         accumulated = 0.0
 
     return accumulated
@@ -60,13 +60,13 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
     :return: DataFrame of station data with updated chill hours
     """
 
-    logger.debug(f"Calculating chill hours using {model} model")
+    log.debug(f"Calculating chill hours using {model} model")
     
     for index, station in stations.iterrows():
         try:
             tair = float(station['tair'])
         except ValueError:
-            logger.error(f"Invalid temperature value for {station['stid']}: {station['tair']}")
+            log.error(f"Invalid temperature value for {station['stid']}: {station['tair']}")
             stations.loc[index, CHILL_HOURS_VAR] = 0.0
             continue
        
@@ -77,7 +77,7 @@ def calculate_chill_hours(stations: pd.DataFrame, model: str = 'utah') -> pd.Dat
             new_chill_hours = utah_model(tair, station['stid'])
 
         stations.loc[index, CHILL_HOURS_VAR] = new_chill_hours
-        logger.debug(f"New chill hours for {station['stid']}: {new_chill_hours}")
+        log.debug(f"New chill hours for {station['stid']}: {new_chill_hours}")
     
-    logger.debug("Finished calculating chill hours")
+    log.debug("Finished calculating chill hours")
     return stations

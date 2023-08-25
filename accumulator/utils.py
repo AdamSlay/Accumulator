@@ -6,7 +6,7 @@ import pandas as pd
 from accumulator.config import MODELS_TO_RUN
 from accumulator.models.chill import calculate_chill_hours
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def set_time_stamp() -> int:
@@ -19,7 +19,7 @@ def set_time_stamp() -> int:
     reference_date = datetime(1990, 1, 1, 0, 0, 0)
     new_time_stamp = (current_time - reference_date).total_seconds() // 3600  # 3600 seconds in an hour
     
-    logger.info(f"New time stamp: {new_time_stamp}")
+    log.info(f"New time stamp: {new_time_stamp}")
     return int(new_time_stamp)
 
 
@@ -34,14 +34,14 @@ def run_models(combined_data: pd.DataFrame):
     """
     updated_accumulation = combined_data
     for i, model in enumerate(MODELS_TO_RUN):
-        logger.info(f"Running model {i+1} of {len(MODELS_TO_RUN)}: {model}")
+        log.info(f"Running model {i + 1} of {len(MODELS_TO_RUN)}: {model}")
         try:
             if model == 'utah':
                 updated_accumulation = calculate_chill_hours(combined_data, 'utah')
             if model == 'grape_rot':
                 pass  # example of a model that has not been implemented yet
         except Exception as e:
-            logger.error(f"Failed to run model {model}: {e}")
+            log.error(f"Failed to run model {model}: {e}")
     
-    logger.info("Finished running models")
+    log.info("Finished running models")
     return updated_accumulation
