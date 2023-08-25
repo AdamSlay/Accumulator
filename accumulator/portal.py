@@ -33,10 +33,15 @@ def fetch_station_data():
         data = convert_resp_to_df(response)
         return data
 
+    except socket.error as e:
+        log.error(f"A socket error occurred while fetching station data: {e}")
+        raise e
+    except json.JSONDecodeError as e:
+        log.error(f"A JSON decode error occurred while parsing the response: {e}")
+        raise e
     except Exception as e:
         log.error(f"An error occurred while fetching station data: {e}")
         raise e
-
 
 def build_query():
     """
