@@ -32,7 +32,7 @@ def fetch_parm() -> pd.DataFrame:
             response.raise_for_status()  # This will raise an HTTPError if the status code is not 200
             content = response.content.decode('utf-8')
             df = pd.read_csv(io.StringIO(content))
-            return df
+            return df  # return the DataFrame if the request was successful, and break out of the loop
         except (requests.exceptions.RequestException, UnicodeDecodeError, pd.errors.ParserError) as e:
             log.error(f"Error occurred: {e}. Retry {i + 1} of {max_retries}")
             time.sleep(retry_delay)
