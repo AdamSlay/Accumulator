@@ -1,6 +1,6 @@
 import logging
 
-from accumulator.logger import init_logging
+from accumulator.utils.logger import init_logging
 from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_station_data
