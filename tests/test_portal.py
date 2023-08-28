@@ -7,48 +7,47 @@ from accumulator.portal import fetch_station_data, convert_resp_to_df
 
 @mock.patch('socket.socket')
 def test_fetch_station_data(mock_socket):
-    # Create a mock socket instance
     mock_socket_instance = mock.MagicMock()
     mock_socket.return_value = mock_socket_instance
-
-    # Mock the response from the socket
     mock_socket_instance.recv.side_effect = [
         b'{"success": true, "response": {"stid": {"data": ["acme", "adax"]}, "relh": {"data": [26.1726, 25.8055]}, '
         b'"tair": {"data": [103.298, 104.828]}}}',
-        b'']
-
-    # Call the function
-    result = fetch_station_data()
+        b'']  # The second response simulates the socket closing
 
     # Check that the function interacted with the mock socket as expected
+    result = fetch_station_data()
     assert mock_socket.call_count == 1
     assert mock_socket_instance.connect.call_count == 1
     assert mock_socket_instance.sendall.call_count == 1
     assert mock_socket_instance.recv.call_count == 2  # Once for the response, once for the empty string
 
-    # Create the expected DataFrame
     expected_df = pd.DataFrame(
-        {"stid": ["acme", "adax"], "relh": [26.1726, 25.8055], "tair": [103.298, 104.828]}).set_index('stid')
-
-    # Check that the function returned the correct DataFrame
+        {
+            "stid": ["acme", "adax"],
+            "relh": [26.1726, 25.8055],
+            "tair": [103.298, 104.828]
+        }
+    )
+    expected_df = expected_df.set_index('stid')
     pd.testing.assert_frame_equal(result, expected_df)
 
 
 def test_convert_resp_to_df():
-    # Mock the response from the DataServer
-    response = {"success": True,
-                "response": {"stid": {"data": ["acme", "adax"]},
-                             "relh": {"data": [26.1726, 25.8055]},
-                             "tair": {"data": [103.298, 104.828]}
-                             }
-                }
+    mock_response = {"success": True,
+                     "response": {"stid": {"data": ["acme", "adax"]},
+                                  "relh": {"data": [26.1726, 25.8055]},
+                                  "tair": {"data": [103.298, 104.828]}
+                                  }
+                     }
 
-    # Call the function
-    result = convert_resp_to_df(response)
-
-    # Create the expected DataFrame
     expected_df = pd.DataFrame(
-        {"stid": ["acme", "adax"], "relh": [26.1726, 25.8055], "tair": [103.298, 104.828]}).set_index('stid')
+        {
+            "stid": ["acme", "adax"],
+            "relh": [26.1726, 25.8055],
+            "tair": [103.298, 104.828]
+        }
+    )
+    expected_df = expected_df.set_index('stid')
 
-    # Check that the function returned the correct DataFrame
+    result = convert_resp_to_df(mock_response)
     pd.testing.assert_frame_equal(result, expected_df)
