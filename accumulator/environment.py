@@ -19,9 +19,6 @@ ACC_DATASET_PATH = os.environ.get('ACC_DATASET_PATH', 'default_path')
 # Variable name for chill hours in the NetCDF4 file
 CHILL_HOURS_VAR = os.environ.get('CHILL_HOURS_VAR', 'default_var')
 
-# URL for the DataPortal request
-DATAPORTAL_REQUEST_URL = os.environ.get('DATAPORTAL_REQUEST_URL', 'default_url')
-
 # DataServer IP
 DATASERVER_IP = os.environ.get('DATASERVER_IP', 'default_ip')
 
