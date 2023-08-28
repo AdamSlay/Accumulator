@@ -1,7 +1,7 @@
 import pandas as pd
 from unittest import mock
 
-from accumulator.environment import ACC_DATASET_PATH
+from accumulator.environment import ACCUM_DATASET_PATH
 from accumulator.ncdf_update import chill_hours_update, open_ncdf, write_ncdf
 
 
@@ -21,7 +21,7 @@ def test_open_ncdf(mock_nc_dataset):
 
     result = open_ncdf()
 
-    mock_nc_dataset.assert_called_once_with(ACC_DATASET_PATH, 'a', format='NETCDF4')
+    mock_nc_dataset.assert_called_once_with(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
     assert result == 'mock dataset'
 
 
@@ -40,6 +40,6 @@ def test_write_ncdf(mock_nc_dataset):
 
     # Check that the function interacted with the mock dataset as expected
     assert mock_nc_dataset.call_count == 1
-    assert mock_nc_dataset.call_args[0][0] == ACC_DATASET_PATH
+    assert mock_nc_dataset.call_args[0][0] == ACCUM_DATASET_PATH
     assert mock_nc_dataset.call_args[0][1] == 'a'
     assert mock_dataset.close.call_count == 1

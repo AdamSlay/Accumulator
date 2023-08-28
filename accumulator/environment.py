@@ -14,7 +14,7 @@ if now_utc.minute <= 10:
 DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
 
 # Path to the NetCDF4 dataset file
-ACC_DATASET_PATH = os.environ.get('ACC_DATASET_PATH', 'default_path')
+ACCUM_DATASET_PATH = os.environ.get('ACCUM_DATASET_PATH', 'default_path')
 
 # Variable name for chill hours in the NetCDF4 file
 CHILL_HOURS_VAR = os.environ.get('CHILL_HOURS_VAR', 'default_var')
