@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
-import json
 import logging
 import os
-
 import pytz
+import toml
 
 log = logging.getLogger(__name__)
 
@@ -13,11 +12,8 @@ if now_utc.minute <= 10:
     now_utc = now_utc - timedelta(hours=1)
 DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
 
-# Path to the NetCDF4 dataset file
+# ENVIRONMENT VARIABLES
 ACCUM_DATASET_PATH = os.environ.get('ACCUM_DATASET_PATH', 'default_path')
-
-# Variable name for chill hours in the NetCDF4 file
-CHILL_HOURS_VAR = os.environ.get('CHILL_HOURS_VAR', 'default_var')
 
 # DataServer IP
 DATASERVER_IP = os.environ.get('DATASERVER_IP', 'default_ip')
@@ -25,24 +21,20 @@ DATASERVER_IP = os.environ.get('DATASERVER_IP', 'default_ip')
 # DataServer Port
 DATASERVER_PORT = int(os.environ.get('DATASERVER_PORT', 0))
 
+# CONFIG 
+config = toml.load('etc/config/config.toml')
+
+# Variable name for chill hours in the NetCDF4 file
+CHILL_HOURS_VAR = config['settings'].get('CHILL_HOURS_VAR', 'default_var')
+
 # DataServer Dataset
-DATASERVER_DATASET = os.environ.get('DATASERVER_DATASET', 'default_dataset')
+DATASERVER_DATASET = config['settings'].get('DATASERVER_DATASET', 'default_dataset')
 
 # DataServer Request Type
-DATASERVER_REQ_TYPE = os.environ.get('DATASERVER_REQ_TYPE', 'default_request_type')
+DATASERVER_REQ_TYPE = config['settings'].get('DATASERVER_REQ_TYPE', 'default_request_type')
 
 # List of models to run
-models_to_run_string = os.environ.get('MODELS_TO_RUN', '[]')
-try:
-    MODELS_TO_RUN = json.loads(models_to_run_string)
-except json.JSONDecodeError:
-    log.error(f"Invalid JSON for MODELS_TO_RUN: {models_to_run_string}")
-    MODELS_TO_RUN = []
+MODELS_TO_RUN = config['settings'].get('MODELS_TO_RUN', [])
 
 # List of station parameters
-station_parms_string = os.environ.get('STATION_PARAMETERS', '[]')
-try:
-    STATION_PARAMETERS = json.loads(station_parms_string)
-except json.JSONDecodeError:
-    log.error(f"Invalid JSON for STATION_PARAMETERS: {station_parms_string}")
-    STATION_PARAMETERS = []
+STATION_PARAMETERS = config['settings'].get('STATION_PARAMETERS', [])

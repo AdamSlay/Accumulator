@@ -24,7 +24,7 @@ def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> 
 
 
 # Function Map for updating the NetCDF4 file with each model
-update_functions = {
+UPDATE_FUNCTIONS = {
     CHILL_HOURS_VAR: chill_hours_update
 }
 
@@ -65,7 +65,7 @@ def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd
     try:
         existing_values = dataset[var_name][var_name][time_index - 1, :]
         updates = updated_accumulation[var_name].values
-        update_function = update_functions[var_name]
+        update_function = UPDATE_FUNCTIONS[var_name]
         new_values = update_function(existing_values, updates)
         dataset[var_name][var_name][time_index, :] = new_values
     except KeyError:
@@ -112,8 +112,8 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
 
     time_index = len(ncdf_dataset.dimensions['time'])  # len of time dimension = next index to append to
 
-    for i, (var_name, update_function) in enumerate(update_functions.items()):
-        log.info(f"Updating variable {i + 1} of {len(update_functions)}: {var_name}")
+    for i, (var_name, update_function) in enumerate(UPDATE_FUNCTIONS.items()):
+        log.info(f"Updating variable {i + 1} of {len(UPDATE_FUNCTIONS)}: {var_name}")
         update_variable(ncdf_dataset, var_name, updated_accumulation, time_index)
 
     ncdf_dataset['time'][time_index] = set_time_stamp()

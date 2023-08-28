@@ -1,0 +1,16 @@
+[settings]
+CHILL_HOURS_VAR = "chill_hours"
+DATASERVER_REQ_TYPE = "map-netcdf"
+DATASERVER_DATASET = "edu.ou.mesonet.standard"
+MODELS_TO_RUN = ["chill_hours"]
+
+[[settings.STATION_PARAMETERS]]
+id = "stid"
+
+[[settings.STATION_PARAMETERS]]
+id = "tair"
+units = "fahr"
+
+[[settings.STATION_PARAMETERS]]
+id = "relh"
+units = "percent"
