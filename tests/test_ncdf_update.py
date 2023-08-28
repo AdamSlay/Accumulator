@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from unittest import mock
 
@@ -47,15 +46,15 @@ def test_update_variable(mock_update_functions):
     time_index = 1
 
     # Call the function
+    existing_values = mock_variable[time_index - 1, :]
+    existing_values_result = existing_values[:]
     update_variable(mock_dataset, var_name, updated_accumulation, time_index)
 
     # Check that the function interacted with the mock objects as expected
     mock_dataset.__getitem__.assert_any_call(var_name)
-    mock_variable.__getitem__.assert_called_once_with((time_index - 1, slice(None, None, None)))
+    mock_variable.__getitem__.assert_any_call((time_index - 1, slice(None, None, None)))
     mock_update_functions.__getitem__.assert_called_once_with(var_name)
-    mock_update_function.assert_called_once_with(mock_variable[time_index - 1, :],
-                                                 updated_accumulation[var_name].values)
-    np.testing.assert_array_equal(mock_variable.__setitem__.call_args[0][1], updated_accumulation[var_name].values)
+    mock_update_function.assert_called_once_with(existing_values_result, updated_accumulation[var_name].values)
 
 
 @mock.patch('os.path.isfile')

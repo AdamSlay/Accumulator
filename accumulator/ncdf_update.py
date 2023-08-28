@@ -54,11 +54,11 @@ def set_time_stamp() -> int:
 
 def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd.DataFrame, time_index: int):
     try:
-        existing_values = dataset[var_name][time_index - 1, :]
+        existing_values = dataset[var_name][var_name][time_index - 1, :]
         updates = updated_accumulation[var_name].values
         update_function = update_functions[var_name]
         new_values = update_function(existing_values, updates)
-        dataset[var_name][time_index, :] = new_values
+        dataset[var_name][var_name][time_index, :] = new_values
     except KeyError:
         log.error(f"Variable {var_name} not found in the dataset")
     except IndexError:
