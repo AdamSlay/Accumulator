@@ -15,8 +15,11 @@ def test_chill_hours_update():
     pd.testing.assert_frame_equal(result, expected_result)
 
 
+@mock.patch('os.path.isfile')
 @mock.patch('netCDF4.Dataset')
-def test_open_ncdf(mock_nc_dataset):
+def test_open_ncdf(mock_nc_dataset, mock_isfile):
+    # Mock the return value of isfile to simulate the file existing
+    mock_isfile.return_value = True
     mock_nc_dataset.return_value = 'mock dataset'
 
     result = open_ncdf()
@@ -25,11 +28,12 @@ def test_open_ncdf(mock_nc_dataset):
     assert result == 'mock dataset'
 
 
+@mock.patch('accumulator.ncdf_update.open_ncdf')
 @mock.patch('netCDF4.Dataset')
-def test_write_ncdf(mock_nc_dataset):
+def test_write_ncdf(mock_nc_dataset, mock_open_ncdf):
     # Create a mock dataset
     mock_dataset = mock.MagicMock()
-    mock_nc_dataset.return_value = mock_dataset
+    mock_open_ncdf.return_value = mock_dataset
 
     # Create a DataFrame with test data
     station_data = {'tair': ['10', 'invalid', '35'], 'stid': ['station1', 'station2', 'station3']}
@@ -39,7 +43,5 @@ def test_write_ncdf(mock_nc_dataset):
     write_ncdf(stations)
 
     # Check that the function interacted with the mock dataset as expected
-    assert mock_nc_dataset.call_count == 1
-    assert mock_nc_dataset.call_args[0][0] == ACCUM_DATASET_PATH
-    assert mock_nc_dataset.call_args[0][1] == 'a'
+    assert mock_open_ncdf.call_count == 1
     assert mock_dataset.close.call_count == 1

@@ -52,10 +52,11 @@ def set_time_stamp() -> int:
     return int(new_time_stamp)
 
 
-def update_variable(dataset, var_name, update_function, updated_accumulation, time_index):
+def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd.DataFrame, time_index: int):
     try:
         existing_values = dataset[var_name][time_index - 1, :]
         updates = updated_accumulation[var_name].values
+        update_function = update_functions[var_name]
         new_values = update_function(existing_values, updates)
         dataset[var_name][time_index, :] = new_values
     except KeyError:
@@ -100,7 +101,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
 
     for i, (var_name, update_function) in enumerate(update_functions.items()):
         log.info(f"Updating variable {i + 1} of {len(update_functions)}: {var_name}")
-        update_variable(ncdf_dataset, var_name, update_function, updated_accumulation, time_index)
+        update_variable(ncdf_dataset, var_name, updated_accumulation, time_index)
 
     ncdf_dataset['time'][time_index] = set_time_stamp()
     ncdf_dataset.close()
