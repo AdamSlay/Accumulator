@@ -1,14 +1,14 @@
 import logging
 import pandas as pd
 
-from accumulator.environment import MODELS_TO_RUN
+from accumulator.environment import MODELS_TO_RUN, CHILL_HOURS_VAR
 from accumulator.models.chill import calculate_chill_hours
 
 log = logging.getLogger(__name__)
 
 
 MODEL_FUNCTIONS = {
-    'chill_hours': calculate_chill_hours
+    CHILL_HOURS_VAR: calculate_chill_hours
 }
 
 
