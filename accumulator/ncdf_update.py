@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 import netCDF4 as nc
 import numpy as np
+import os
 import pandas as pd
 
 from accumulator.environment import ACCUM_DATASET_PATH, CHILL_HOURS_VAR
@@ -26,6 +27,15 @@ def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> 
 update_functions = {
     CHILL_HOURS_VAR: chill_hours_update
 }
+
+
+def check_dataset_exists() -> bool:
+    """
+    Check if the NetCDF4 dataset exists
+
+    :return: True if the dataset exists, False otherwise
+    """
+    return os.path.isfile(ACCUM_DATASET_PATH)
 
 
 def set_time_stamp() -> int:
@@ -58,10 +68,13 @@ def open_ncdf() -> nc.Dataset:
     """
     Open the NetCDF4 file specified by ACC_DATASET_PATH for writing
     """
+    
+    if not check_dataset_exists():
+        print(f"File not found: {ACCUM_DATASET_PATH}")
+        raise FileNotFoundError(f"File not found: {ACCUM_DATASET_PATH}")
+    
     try:
         ncdf_dataset = nc.Dataset(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
-    except FileNotFoundError:
-        raise RuntimeError(f"File not found: {ACCUM_DATASET_PATH}")
     except PermissionError:
         raise RuntimeError(f"Permission denied: {ACCUM_DATASET_PATH}")
     except OSError as e:
@@ -79,7 +92,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
 
     try:
         ncdf_dataset = open_ncdf()
-    except RuntimeError as e:
+    except RuntimeError or FileNotFoundError as e:
         log.error(e)
         return
 
