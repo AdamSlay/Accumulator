@@ -1,10 +1,10 @@
 [settings]
-CHILL_HOURS_VAR = "chill_hours"
-DATASERVER_REQ_TYPE = "map-netcdf"
-DATASERVER_DATASET = "edu.ou.mesonet.standard"
-MODELS_TO_RUN = ["chill_hours"]
 LOG_LEVEL = "INFO"
 LOG_FILE = "accumulator.log"
+DATASERVER_REQ_TYPE = "map-netcdf"
+DATASERVER_DATASET = "edu.ou.mesonet.standard"
+CHILL_HOURS_VAR = "chill_hours"
+MODELS_TO_RUN = ["chill_hours"]
 
 [[settings.STATION_PARAMETERS]]
 id = "stid"

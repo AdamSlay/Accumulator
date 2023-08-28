@@ -10,8 +10,7 @@ log = logging.getLogger(__name__)
 now_utc = datetime.now(pytz.timezone('UTC'))
 if now_utc.minute <= 10:
     now_utc = now_utc - timedelta(hours=1)
-# DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
-DATE_TIME = '2023-03-01 04:00:00'
+DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
 
 # ENVIRONMENT VARIABLES
 ACCUM_DATASET_PATH = os.environ.get('ACCUM_DATASET_PATH', 'default_path')
