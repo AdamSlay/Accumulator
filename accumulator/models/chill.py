@@ -75,7 +75,6 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
         # for now there is only the one model
         if model == 'utah':
             new_chill_hours = utah_model(tair, str(station.name))
-            logger.debug(f"New chill hours for {station.name}: {new_chill_hours}. RUNNING UTAH MODEL")
         else:
             new_chill_hours = utah_model(tair, str(station.name))
 

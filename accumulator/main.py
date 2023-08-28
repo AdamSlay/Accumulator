@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from accumulator.utils.logger import init_logging
 from accumulator.model_run import run_models
@@ -17,6 +18,7 @@ def main():
         write_ncdf(updated_accum_data)
     except Exception as e:
         log.error(f"An error occurred: {e}")
+        sys.exit(1)
 
     log.info("Finished running accumulator")
 
