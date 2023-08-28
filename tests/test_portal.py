@@ -12,7 +12,7 @@ def test_fetch_station_data(mock_socket):
     mock_socket_instance.recv.side_effect = [
         b'{"success": true, "response": {"stid": {"data": ["acme", "adax"]}, "relh": {"data": [26.1726, 25.8055]}, '
         b'"tair": {"data": [103.298, 104.828]}}}',
-        b'']  # The second response simulates the socket closing
+        b'']  # The empty string simulates the socket closing
 
     # Check that the function interacted with the mock socket as expected
     result = fetch_station_data()
