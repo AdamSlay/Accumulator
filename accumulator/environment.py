@@ -19,8 +19,8 @@ DATASERVER_PORT = int(os.environ.get('DATASERVER_PORT', 0))
 
 # CONFIG 
 config = toml.load('etc/config/config.toml')
-CHILL_HOURS_VAR = config['settings'].get('CHILL_HOURS_VAR', 'default_var')
-DATASERVER_DATASET = config['settings'].get('DATASERVER_DATASET', 'default_dataset')
-DATASERVER_REQ_TYPE = config['settings'].get('DATASERVER_REQ_TYPE', 'default_request_type')
+CHILL_HOURS_VAR = config['settings'].get('CHILL_HOURS_VAR', 'chill_hours')
+DATASERVER_DATASET = config['settings'].get('DATASERVER_DATASET', 'edu.ou.mesonet.standard')
+DATASERVER_REQ_TYPE = config['settings'].get('DATASERVER_REQ_TYPE', 'map-netcdf')
 MODELS_TO_RUN = config['settings'].get('MODELS_TO_RUN', [])
 STATION_PARAMETERS = config['settings'].get('STATION_PARAMETERS', [])
