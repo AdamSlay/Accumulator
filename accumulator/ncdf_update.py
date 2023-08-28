@@ -63,15 +63,15 @@ def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd
     :return: None
     """
     try:
-        existing_values = dataset[var_name][var_name][time_index - 1, :]
+        existing_values = dataset[var_name][time_index - 1, :]
         updates = updated_accumulation[var_name].values
         update_function = UPDATE_FUNCTIONS[var_name]
         new_values = update_function(existing_values, updates)
-        dataset[var_name][var_name][time_index, :] = new_values
-    except KeyError:
-        log.error(f"Variable {var_name} not found in the dataset")
-    except IndexError:
-        log.error(f"Index error occurred while accessing the data of {var_name}")
+        dataset[var_name][time_index, :] = new_values
+    except KeyError as e:
+        log.error(f"Variable {var_name} not found in the dataset: {e}")
+    except IndexError as e:
+        log.error(f"Index error occurred while accessing the data of {var_name}: {e}")
     except Exception as e:
         log.error(f"Error occurred while updating the data of {var_name} in update_variable(): {e}")
 
@@ -89,10 +89,10 @@ def open_ncdf() -> nc.Dataset:
     
     try:
         ncdf_dataset = nc.Dataset(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
-    except PermissionError:
-        raise RuntimeError(f"Permission denied: {ACCUM_DATASET_PATH}")
+    except PermissionError as e:
+        raise RuntimeError(f"Permission denied for {ACCUM_DATASET_PATH}: {e}")
     except OSError as e:
-        raise RuntimeError(f"OS error occurred while opening the file: {e}")
+        raise RuntimeError(f"OS error occurred while opening {ACCUM_DATASET_PATH}: {e}")
     return ncdf_dataset
 
 
