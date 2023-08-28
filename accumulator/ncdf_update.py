@@ -53,6 +53,15 @@ def set_time_stamp() -> int:
 
 
 def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd.DataFrame, time_index: int):
+    """
+    Update the variable in the NetCDF4 file using the corresponding update function
+
+    :param dataset: the NetCDF4 dataset
+    :param var_name: the name of the variable to update
+    :param updated_accumulation: the updated accumulation data as a DataFrame
+    :param time_index: the index of the time dimension to update
+    :return: None
+    """
     try:
         existing_values = dataset[var_name][var_name][time_index - 1, :]
         updates = updated_accumulation[var_name].values
@@ -70,6 +79,8 @@ def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd
 def open_ncdf() -> nc.Dataset:
     """
     Open the NetCDF4 file specified by ACC_DATASET_PATH for writing
+
+    :return: NetCDF4 dataset
     """
     
     if not check_dataset_exists():
