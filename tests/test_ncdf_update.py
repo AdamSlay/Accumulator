@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import netCDF4 as nc
 from unittest import mock
 
 from accumulator.environment import ACCUM_DATASET_PATH
@@ -29,32 +31,31 @@ def test_set_time_stamp():
     assert isinstance(set_time_stamp(), int)
 
 
-@mock.patch('accumulator.ncdf_update.UPDATE_FUNCTIONS')
-def test_update_variable(mock_update_functions):
-    # Create a mock dataset with a mock variable
-    mock_dataset = mock.MagicMock()
-    mock_variable = mock.MagicMock()
-    mock_dataset.__getitem__.return_value = mock_variable
+def test_update_variable():
+    # Create a new NetCDF4 file in diskless mode
+    dataset = nc.Dataset('/tmp/test.nc', 'w', diskless=True)
 
-    # Mock the update function to return the updates as is
-    mock_update_function = mock.MagicMock(side_effect=lambda x, y: y)
-    mock_update_functions.__getitem__.return_value = mock_update_function
+    # Add dimensions to the dataset
+    dataset.createDimension('time', None)
+    dataset.createDimension('station', 3)
 
-    # Create test data
-    var_name = 'test_var'
-    updated_accumulation = pd.DataFrame({var_name: [1.0, -1.0, 0.0]})
-    time_index = 1
+    # Add a variable to the dataset
+    var = dataset.createVariable('chill_hours', np.float32, ('time', 'station'))
+
+    # Initialize the variable with some data
+    var[0, :] = np.array([1.0, 2.0, 3.0])
+
+    # Create a test DataFrame
+    updated_accumulation = pd.DataFrame({'chill_hours': [1.0, -1.0, 0.0]})
 
     # Call the function
-    existing_values = mock_variable[time_index - 1, :]
-    existing_values_result = existing_values[:]
-    update_variable(mock_dataset, var_name, updated_accumulation, time_index)
+    update_variable(dataset, 'chill_hours', updated_accumulation, 1)
 
-    # Check that the function interacted with the mock objects as expected
-    mock_dataset.__getitem__.assert_any_call(var_name)
-    mock_variable.__getitem__.assert_any_call((time_index - 1, slice(None, None, None)))
-    mock_update_functions.__getitem__.assert_called_once_with(var_name)
-    mock_update_function.assert_called_once_with(existing_values_result, updated_accumulation[var_name].values)
+    # Calculate expected values
+    expected_values = np.array([2.0, 1.0, 3.0]) 
+
+    # Check if the dataset was updated as expected
+    assert np.all(dataset['chill_hours'][1, :] == expected_values)
 
 
 @mock.patch('os.path.isfile')
@@ -77,9 +78,8 @@ def test_write_ncdf(mock_nc_dataset, mock_open_ncdf):
     mock_dataset = mock.MagicMock()
     mock_open_ncdf.return_value = mock_dataset
 
-    station_data = {'tair': ['10', 'invalid', '35'], 'stid': ['station1', 'station2', 'station3']}
+    station_data = {'chill_hours': ['10', 'invalid', '35'], 'stid': ['station1', 'station2', 'station3']}
     stations = pd.DataFrame(station_data)
-
     write_ncdf(stations)
 
     assert mock_open_ncdf.call_count == 1

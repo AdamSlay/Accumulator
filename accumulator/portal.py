@@ -1,6 +1,7 @@
 import json
 import logging
 import socket
+import sys
 
 import pandas as pd
 
@@ -35,13 +36,13 @@ def fetch_station_data():
 
     except socket.error as e:
         log.error(f"A socket error occurred while fetching station data: {e}")
-        raise e
+        sys.exit(1)
     except json.JSONDecodeError as e:
         log.error(f"A JSON decode error occurred while parsing the response: {e}")
-        raise e
+        sys.exit(1)
     except Exception as e:
         log.error(f"An error occurred while fetching station data: {e}")
-        raise e
+        sys.exit(1)
 
 
 def build_query():

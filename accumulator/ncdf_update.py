@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 import logging
 import netCDF4 as nc
@@ -70,10 +71,16 @@ def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd
         dataset[var_name][time_index, :] = new_values
     except KeyError as e:
         log.error(f"Variable {var_name} not found in the dataset: {e}")
+        dataset.close()
+        sys.exit(4)
     except IndexError as e:
         log.error(f"Index error occurred while accessing the data of {var_name}: {e}")
+        dataset.close()
+        sys.exit(4)
     except Exception as e:
         log.error(f"Error occurred while updating the data of {var_name} in update_variable(): {e}")
+        dataset.close()
+        sys.exit(4)
 
 
 def open_ncdf() -> nc.Dataset:
@@ -84,15 +91,19 @@ def open_ncdf() -> nc.Dataset:
     """
     
     if not check_dataset_exists():
-        print(f"File not found: {ACCUM_DATASET_PATH}")
-        raise FileNotFoundError(f"File not found: {ACCUM_DATASET_PATH}")
+        log.error(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
+        sys.exit(4)
     
     try:
         ncdf_dataset = nc.Dataset(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
+
     except PermissionError as e:
-        raise RuntimeError(f"Permission denied for {ACCUM_DATASET_PATH}: {e}")
+        log.error(f"Permission denied for {ACCUM_DATASET_PATH}: {e}")
+        sys.exit(4)
     except OSError as e:
-        raise RuntimeError(f"OS error occurred while opening {ACCUM_DATASET_PATH}: {e}")
+        log.error(f"OS error occurred while opening {ACCUM_DATASET_PATH}: {e}")
+        sys.exit(4)
+
     return ncdf_dataset
 
 
@@ -104,12 +115,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
     """
     log.info(f"Writing data to NetCDF4 file: {ACCUM_DATASET_PATH}")
 
-    try:
-        ncdf_dataset = open_ncdf()
-    except RuntimeError or FileNotFoundError as e:
-        log.error(e)
-        return
-
+    ncdf_dataset = open_ncdf()
     time_index = len(ncdf_dataset.dimensions['time'])  # len of time dimension = next index to append to
 
     for i, (var_name, update_function) in enumerate(UPDATE_FUNCTIONS.items()):
