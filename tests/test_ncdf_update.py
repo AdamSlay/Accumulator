@@ -32,17 +32,11 @@ def test_set_time_stamp():
 
 
 def test_update_variable():
-    # Create a new NetCDF4 file in diskless mode
+    # Create a test NetCDF4 file in diskless mode so that it doesn't actually write to disk
     dataset = nc.Dataset('/tmp/test.nc', 'w', diskless=True)
-
-    # Add dimensions to the dataset
     dataset.createDimension('time', None)
     dataset.createDimension('station', 3)
-
-    # Add a variable to the dataset
     var = dataset.createVariable('chill_hours', np.float32, ('time', 'station'))
-
-    # Initialize the variable with some data
     var[0, :] = np.array([1.0, 2.0, 3.0])
 
     # Create a test DataFrame
@@ -50,11 +44,8 @@ def test_update_variable():
 
     # Call the function
     update_variable(dataset, 'chill_hours', updated_accumulation, 1)
+    expected_values = np.array([2.0, 1.0, 3.0])
 
-    # Calculate expected values
-    expected_values = np.array([2.0, 1.0, 3.0]) 
-
-    # Check if the dataset was updated as expected
     assert np.all(dataset['chill_hours'][1, :] == expected_values)
 
 
