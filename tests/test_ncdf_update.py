@@ -29,7 +29,7 @@ def test_set_time_stamp():
     assert isinstance(set_time_stamp(), int)
 
 
-@mock.patch('accumulator.ncdf_update.update_functions')
+@mock.patch('accumulator.ncdf_update.UPDATE_FUNCTIONS')
 def test_update_variable(mock_update_functions):
     # Create a mock dataset with a mock variable
     mock_dataset = mock.MagicMock()
