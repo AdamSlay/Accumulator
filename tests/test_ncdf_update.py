@@ -78,13 +78,10 @@ def test_write_ncdf(mock_nc_dataset, mock_open_ncdf):
     mock_dataset = mock.MagicMock()
     mock_open_ncdf.return_value = mock_dataset
 
-    # Create a DataFrame with test data
     station_data = {'tair': ['10', 'invalid', '35'], 'stid': ['station1', 'station2', 'station3']}
     stations = pd.DataFrame(station_data)
 
-    # Call the function
     write_ncdf(stations)
 
-    # Check that the function interacted with the mock dataset as expected
     assert mock_open_ncdf.call_count == 1
     assert mock_dataset.close.call_count == 1
