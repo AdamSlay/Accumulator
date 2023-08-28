@@ -63,6 +63,8 @@ def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd
         log.error(f"Variable {var_name} not found in the dataset")
     except IndexError:
         log.error(f"Index error occurred while accessing the data of {var_name}")
+    except Exception as e:
+        log.error(f"Error occurred while updating the data of {var_name} in update_variable(): {e}")
 
 
 def open_ncdf() -> nc.Dataset:
