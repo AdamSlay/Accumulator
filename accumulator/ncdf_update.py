@@ -10,7 +10,7 @@ from accumulator.environment import ACCUM_DATASET_PATH, CHILL_HOURS_VAR
 log = logging.getLogger(__name__)
 
 
-def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> pd.DataFrame:
+def chill_hours_update_func(existing_values: pd.DataFrame, updates: pd.DataFrame) -> pd.DataFrame:
     """
     Update the accumulated chill hours using the following rules:
         1. If the existing value + update is less than 0, set it to 0
@@ -25,7 +25,7 @@ def chill_hours_update(existing_values: pd.DataFrame, updates: pd.DataFrame) -> 
 
 # Function Map for updating the NetCDF4 file with each model
 UPDATE_FUNCTIONS = {
-    CHILL_HOURS_VAR: chill_hours_update
+    CHILL_HOURS_VAR: chill_hours_update_func
 }
 
 
@@ -43,7 +43,7 @@ def set_time_stamp() -> int:
     return int(new_time_stamp)
 
 
-def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd.DataFrame, time_index: int):
+def route_var_to_update_func(dataset: nc.Dataset, var_name: str, updated_accumulation: pd.DataFrame, time_index: int):
     """
     Update the variable in the NetCDF4 file using the corresponding update function
 
@@ -76,7 +76,7 @@ def open_ncdf() -> nc.Dataset:
 
     :return: NetCDF4 dataset
     """
-    
+
     if not os.path.isfile(ACCUM_DATASET_PATH):
         log.error(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
         raise FileNotFoundError(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
@@ -93,28 +93,43 @@ def open_ncdf() -> nc.Dataset:
     return ncdf_dataset
 
 
-def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
+def write_ncdf(updated_accumulation: pd.DataFrame, update_functions: dict[str, callable] = None) -> None:
+    """
+    Write the updated accumulation data to the NetCDF4 file
+    :param updated_accumulation: The updated accumulation data as a DataFrame
+    :param update_functions: A dictionary mapping variable names to update functions
+    :return: None
+    """
     log.info(f"Writing data to NetCDF4 file: {ACCUM_DATASET_PATH}")
+
+    if update_functions is None:
+        update_functions = UPDATE_FUNCTIONS
+
+    ncdf_dataset = None
 
     try:
         ncdf_dataset = open_ncdf()
-    except (PermissionError, OSError) as e:
+        time_index = len(ncdf_dataset.dimensions['time'])
+        update_ncdf_data(ncdf_dataset, updated_accumulation, time_index, update_functions)
+    except (PermissionError, OSError, FileNotFoundError) as e:
         log.error(f"An error occurred while writing to the NetCDF4 file: {e}")
-        # Close the NetCDF4 file if it was opened
-        if 'ncdf_dataset' in locals():
+        raise
+    finally:
+        if ncdf_dataset:
             ncdf_dataset.close()
             log.info("Closing NetCDF4 file")
-        
-        raise
-    
-    time_index = len(ncdf_dataset.dimensions['time'])  # len of time dimension = next index to append to
-    try:
-        ncdf_dataset['time'][time_index] = set_time_stamp()
 
-        for i, (var_name, update_function) in enumerate(UPDATE_FUNCTIONS.items()):
-            log.info(f"Updating variable {i + 1} of {len(UPDATE_FUNCTIONS)}: {var_name}")
-            update_variable(ncdf_dataset, var_name, updated_accumulation, time_index)
 
-    finally:
-        ncdf_dataset.close()
-        log.info("Closing NetCDF4 file")
+def update_ncdf_data(ncdf_dataset: nc.Dataset, updated_accumulation: pd.DataFrame, time_index: int, update_functions: dict[str, callable]) -> None:
+    """
+    Update the NetCDF4 file with the updated accumulation data
+    :param ncdf_dataset: The NetCDF4 dataset
+    :param updated_accumulation: The updated accumulation data as a DataFrame
+    :param time_index: The index of the time dimension to update
+    :param update_functions: A dictionary mapping variable names to update functions
+    :return: None
+    """
+    ncdf_dataset['time'][time_index] = set_time_stamp()
+    for i, (var_name, update_function) in enumerate(update_functions.items()):
+        log.info(f"Updating variable {i + 1} of {len(update_functions)}: {var_name}")
+        route_var_to_update_func(ncdf_dataset, var_name, updated_accumulation, time_index)
