@@ -4,7 +4,7 @@ import netCDF4 as nc
 from unittest import mock
 
 from accumulator.environment import ACCUM_DATASET_PATH
-from accumulator.ncdf_update import chill_hours_update, open_ncdf, write_ncdf, check_dataset_exists, set_time_stamp, \
+from accumulator.ncdf_update import chill_hours_update, open_ncdf, write_ncdf, set_time_stamp, \
     update_variable
 
 
