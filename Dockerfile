@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y python3 python3-venv python3-pip
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-# project file = /usr/src/pyaccumulator | src file = /usr/src/pyaccumulator/accumulator
+# project namespace = /usr/src/pyaccumulator | src = /usr/src/pyaccumulator/accumulator
 WORKDIR /usr/src/pyaccumulator
 
 COPY ./requirements.txt ./requirements.txt
@@ -28,7 +28,6 @@ WORKDIR /usr/src/pyaccumulator
 
 COPY --from=build /usr/src/pyaccumulator /usr/src/pyaccumulator
 
-# Create a non-root user then change ownership of project and switch to that user
 RUN useradd -m accumuser
 RUN chown -R accumuser:accumuser /usr/src/pyaccumulator
 USER accumuser
@@ -38,6 +37,4 @@ ENV PATH="/venv/bin:$PATH"
 
 # Make sure the packages are visible to python
 ENV PYTHONPATH "${PYTHONPATH}:/usr/src/pyaccumulator/"
-
-# run the app
 CMD ["python3", "accumulator/main.py"]
