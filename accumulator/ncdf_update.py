@@ -1,4 +1,3 @@
-import sys
 from datetime import datetime
 import logging
 import netCDF4 as nc
@@ -71,16 +70,13 @@ def update_variable(dataset: nc.Dataset, var_name: str, updated_accumulation: pd
         dataset[var_name][time_index, :] = new_values
     except KeyError as e:
         log.error(f"Variable {var_name} not found in the dataset: {e}")
-        dataset.close()
-        sys.exit(4)
+        raise
     except IndexError as e:
         log.error(f"Index error occurred while accessing the data of {var_name}: {e}")
-        dataset.close()
-        sys.exit(4)
+        raise
     except Exception as e:
         log.error(f"Error occurred while updating the data of {var_name} in update_variable(): {e}")
-        dataset.close()
-        sys.exit(4)
+        raise
 
 
 def open_ncdf() -> nc.Dataset:
@@ -92,36 +88,36 @@ def open_ncdf() -> nc.Dataset:
     
     if not check_dataset_exists():
         log.error(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
-        sys.exit(4)
-    
+        raise FileNotFoundError(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
+
     try:
         ncdf_dataset = nc.Dataset(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
-
     except PermissionError as e:
         log.error(f"Permission denied for {ACCUM_DATASET_PATH}: {e}")
-        sys.exit(4)
+        raise
     except OSError as e:
         log.error(f"OS error occurred while opening {ACCUM_DATASET_PATH}: {e}")
-        sys.exit(4)
+        raise
 
     return ncdf_dataset
 
 
 def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
-    """
-    Iterate through the accumulated variables and apply the corresponding update function
-
-    :param updated_accumulation: Total Accumulated Chill Hours
-    """
     log.info(f"Writing data to NetCDF4 file: {ACCUM_DATASET_PATH}")
 
-    ncdf_dataset = open_ncdf()
+    try:
+        ncdf_dataset = open_ncdf()
+    except (PermissionError, OSError) as e:
+        log.error(f"An error occurred while writing to the NetCDF4 file: {e}")
+        raise
+    
     time_index = len(ncdf_dataset.dimensions['time'])  # len of time dimension = next index to append to
+    try:
+        for i, (var_name, update_function) in enumerate(UPDATE_FUNCTIONS.items()):
+            log.info(f"Updating variable {i + 1} of {len(UPDATE_FUNCTIONS)}: {var_name}")
+            update_variable(ncdf_dataset, var_name, updated_accumulation, time_index)
 
-    for i, (var_name, update_function) in enumerate(UPDATE_FUNCTIONS.items()):
-        log.info(f"Updating variable {i + 1} of {len(UPDATE_FUNCTIONS)}: {var_name}")
-        update_variable(ncdf_dataset, var_name, updated_accumulation, time_index)
-
-    ncdf_dataset['time'][time_index] = set_time_stamp()
-    ncdf_dataset.close()
-    log.info("Closing NetCDF4 file")
+        ncdf_dataset['time'][time_index] = set_time_stamp()
+    finally:
+        ncdf_dataset.close()
+        log.info("Closing NetCDF4 file")
