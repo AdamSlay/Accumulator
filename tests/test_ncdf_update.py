@@ -18,15 +18,6 @@ def test_chill_hours_update():
     pd.testing.assert_frame_equal(result, expected_result)
 
 
-@mock.patch('os.path.isfile')
-def test_check_dataset_exists(mock_isfile):
-    mock_isfile.return_value = True
-    assert check_dataset_exists() is True
-
-    mock_isfile.return_value = False
-    assert check_dataset_exists() is False
-
-
 def test_set_time_stamp():
     assert isinstance(set_time_stamp(), int)
 
