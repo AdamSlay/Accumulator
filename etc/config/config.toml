@@ -1,6 +1,6 @@
 [settings]
 LOG_LEVEL = "INFO"
-LOG_FILE = "accumulator.log"
+LOG_PATH = "accumulator.log"
 DATASERVER_REQ_TYPE = "map-netcdf"
 DATASERVER_DATASET = "edu.ou.mesonet.standard"
 CHILL_HOURS_VAR = "chill_hours"

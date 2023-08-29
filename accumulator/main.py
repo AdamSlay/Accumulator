@@ -7,7 +7,7 @@ from accumulator.utils.logger import init_logging
 from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_station_data
-from accumulator.environment import ACCUM_DATASET_PATH
+from accumulator.environment import ACCUM_DATASET_PATH, LOG_PATH
 
 
 def main():
@@ -22,16 +22,13 @@ def main():
         write_ncdf(updated_accum_data)
 
     except (socket.error, json.JSONDecodeError) as e:
-        log.error(f"A network or data error occurred: {e}")
+        log.error(f"An error occurred while fetching station data or processing the response: {e}")
         sys.exit(2)
-    except FileNotFoundError as e:
-        log.error(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}: {e}")
+    except (PermissionError, OSError, FileNotFoundError) as e:
+        log.error(f"An error occurred while accessing or modifying the NetCDF4 dataset at {ACCUM_DATASET_PATH}: {e}")
         sys.exit(3)
-    except (PermissionError, OSError) as e:
-        log.error(f"Permission denied or OSError for {ACCUM_DATASET_PATH}: {e}")
-        sys.exit(4)
     except Exception as e:
-        log.error(f"An unexpected error occurred: {e}")
+        log.error(f"An unexpected error occurred. Please check the logs at {LOG_PATH} for more details: {e}")
         sys.exit(1)
 
     log.info("Finished running accumulator")

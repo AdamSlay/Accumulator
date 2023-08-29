@@ -100,15 +100,21 @@ def write_ncdf(updated_accumulation: pd.DataFrame) -> None:
         ncdf_dataset = open_ncdf()
     except (PermissionError, OSError) as e:
         log.error(f"An error occurred while writing to the NetCDF4 file: {e}")
+        # Close the NetCDF4 file if it was opened
+        if 'ncdf_dataset' in locals():
+            ncdf_dataset.close()
+            log.info("Closing NetCDF4 file")
+        
         raise
     
     time_index = len(ncdf_dataset.dimensions['time'])  # len of time dimension = next index to append to
     try:
+        ncdf_dataset['time'][time_index] = set_time_stamp()
+
         for i, (var_name, update_function) in enumerate(UPDATE_FUNCTIONS.items()):
             log.info(f"Updating variable {i + 1} of {len(UPDATE_FUNCTIONS)}: {var_name}")
             update_variable(ncdf_dataset, var_name, updated_accumulation, time_index)
 
-        ncdf_dataset['time'][time_index] = set_time_stamp()
     finally:
         ncdf_dataset.close()
         log.info("Closing NetCDF4 file")

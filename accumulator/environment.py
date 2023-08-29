@@ -25,4 +25,4 @@ DATASERVER_REQ_TYPE = config['settings'].get('DATASERVER_REQ_TYPE', 'map-netcdf'
 MODELS_TO_RUN = config['settings'].get('MODELS_TO_RUN', [])
 STATION_PARAMETERS = config['settings'].get('STATION_PARAMETERS', [])
 LOG_LEVEL = config['settings'].get('LOG_LEVEL', 'INFO')
-LOG_FILE = config['settings'].get('LOG_FILE', 'accumulator.log')
+LOG_PATH = config['settings'].get('LOG_PATH', 'accumulator.log')
