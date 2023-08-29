@@ -29,15 +29,6 @@ UPDATE_FUNCTIONS = {
 }
 
 
-def check_dataset_exists() -> bool:
-    """
-    Check if the NetCDF4 dataset exists
-
-    :return: True if the dataset exists, False otherwise
-    """
-    return os.path.isfile(ACCUM_DATASET_PATH)
-
-
 def set_time_stamp() -> int:
     """
     Calculate the number of hours since the reference date
@@ -86,7 +77,7 @@ def open_ncdf() -> nc.Dataset:
     :return: NetCDF4 dataset
     """
     
-    if not check_dataset_exists():
+    if not os.path.isfile(ACCUM_DATASET_PATH):
         log.error(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
         raise FileNotFoundError(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
 
