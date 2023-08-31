@@ -32,6 +32,7 @@ def main():
         sys.exit(1)
 
     log.info("Finished running accumulator")
+    return 0
 
 
 if __name__ == '__main__':

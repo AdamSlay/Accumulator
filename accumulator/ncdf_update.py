@@ -6,6 +6,7 @@ import os
 import pandas as pd
 
 from accumulator.environment import ACCUM_DATASET_PATH, CHILL_HOURS_VAR
+from accumulator.utils.create_ncdf import create_dataset
 
 log = logging.getLogger(__name__)
 
@@ -78,8 +79,14 @@ def open_ncdf() -> nc.Dataset:
     """
 
     if not os.path.isfile(ACCUM_DATASET_PATH):
-        log.error(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
-        raise FileNotFoundError(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
+        log.warning(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
+
+        try:
+            log.info(f"Creating NetCDF4 file at {ACCUM_DATASET_PATH}")
+            create_dataset(ACCUM_DATASET_PATH)
+        except (PermissionError, OSError) as e:
+            log.error(f"An error occurred while creating the NetCDF4 file: {e}")
+            raise
 
     try:
         ncdf_dataset = nc.Dataset(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
