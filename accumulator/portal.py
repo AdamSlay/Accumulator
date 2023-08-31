@@ -16,9 +16,12 @@ def fetch_station_data():
 
     :return: pandas DataFrame of the latest tair data
     """
+    log.info(f"Connecting to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
+
     try:
         # Create a socket object and connect to the server
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(10)
         sock.connect((DATASERVER_IP, DATASERVER_PORT))
         query = build_query()
         request_bytes = json.dumps(query).encode('utf-8')

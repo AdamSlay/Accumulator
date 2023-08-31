@@ -27,6 +27,7 @@ COPY --from=build /venv /venv
 WORKDIR /usr/src/pyaccumulator
 
 COPY --from=build /usr/src/pyaccumulator /usr/src/pyaccumulator
+COPY .env /usr/src/pyaccumulator/.env
 
 RUN useradd -m accumuser
 RUN chown -R accumuser:accumuser /usr/src/pyaccumulator
