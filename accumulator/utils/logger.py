@@ -3,6 +3,7 @@ import sys
 
 from accumulator.environment import LOG_LEVEL
 
+
 def init_logging():
     handler = logging.StreamHandler(sys.stdout)
     logging.basicConfig(
