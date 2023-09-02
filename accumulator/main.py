@@ -23,17 +23,31 @@ def main():
 
     except (socket.error, json.JSONDecodeError) as e:
         log.error(f"An error occurred while fetching station data or processing the response: {e}")
-        sys.exit(2)
+        return {
+            'statusCode': 500,
+            'body': 'A socket error occurred'
+        }
     except (PermissionError, OSError, FileNotFoundError) as e:
         log.error(f"An error occurred while accessing or modifying the NetCDF4 dataset at {ACCUM_DATASET_PATH}: {e}")
-        sys.exit(3)
+        return {
+            'statusCode': 500,
+            'body': 'A file error occurred'
+        }
     except Exception as e:
         log.error(f"An unexpected error occurred. Please check the logs at {LOG_PATH} for more details: {e}")
-        sys.exit(1)
+        return {
+            'statusCode': 500,
+            'body': 'An unexpected error occurred'
+        }
 
-    log.info("Finished running accumulator")
-    return 0
+    finally:
+        log.info("Finished running accumulator")
+    
+    return {
+        'statusCode': 200,
+        'body': 'Function completed'
+    }
 
 
 if __name__ == '__main__':
-    main()
+    exit(main())
