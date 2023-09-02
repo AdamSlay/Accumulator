@@ -27,7 +27,6 @@ COPY --from=build /venv /venv
 WORKDIR /usr/src/pyaccumulator
 
 COPY --from=build /usr/src/pyaccumulator /usr/src/pyaccumulator
-COPY .env /usr/src/pyaccumulator/.env
 
 RUN useradd -m accumuser
 RUN chown -R accumuser:accumuser /usr/src/pyaccumulator
@@ -38,4 +37,4 @@ ENV PATH="/venv/bin:$PATH"
 
 # Make sure the packages are visible to python
 ENV PYTHONPATH "${PYTHONPATH}:/usr/src/pyaccumulator/"
-CMD ["python3", "accumulator/main.py"]
+ENTRYPOINT ["python3", "/usr/src/pyaccumulator/accumulator/main.py"]
