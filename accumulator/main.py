@@ -1,5 +1,5 @@
+import argparse
 import logging
-import sys
 import socket
 import json
 
@@ -10,7 +10,7 @@ from accumulator.portal import fetch_station_data
 from accumulator.environment import ACCUM_DATASET_PATH, LOG_PATH
 
 
-def main():
+def main(event=None, context=None):
     init_logging()
     log = logging.getLogger(__name__)
 
@@ -42,12 +42,26 @@ def main():
 
     finally:
         log.info("Finished running accumulator")
-    
+
     return {
         'statusCode': 200,
         'body': 'Function completed'
     }
 
 
-if __name__ == '__main__':
-    exit(main())
+def lambda_handler(event, context):
+    # Call your main function and return its result
+    return main(event, context)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--local", action="store_true",
+                        help="run the application locally without aws lambda invocation")
+    # add argument for lambda event
+    parser.add_argument("--event", action="store_true", help="lambda event")
+    parser.add_argument("--context", action="store_true", help="lambda context")
+
+    args = parser.parse_args()
+    lambda_handler(args.event, args.context)
+

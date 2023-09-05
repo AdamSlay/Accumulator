@@ -37,4 +37,9 @@ ENV PATH="/venv/bin:$PATH"
 
 # Make sure the packages are visible to python
 ENV PYTHONPATH "${PYTHONPATH}:/usr/src/pyaccumulator/"
-ENTRYPOINT ["python3", "/usr/src/pyaccumulator/accumulator/main.py"]
+
+# Set the entry point to the AWS Lambda RIC
+ENTRYPOINT [ "/venv/bin/python", "-m", "awslambdaric" ]
+
+# Run the command inside your container filesystem.
+CMD [ "accumulator.main.lambda_handler" ]
