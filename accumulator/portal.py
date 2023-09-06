@@ -19,7 +19,7 @@ def fetch_station_data():
     log.info(f"Connecting to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
 
     try:
-        # Create a socket object and connect to the server
+        # Create a socket object and connect to DataServer
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(10)
             sock.connect((DATASERVER_IP, DATASERVER_PORT))
