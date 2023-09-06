@@ -64,4 +64,3 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     lambda_handler(args.event, args.context)
-

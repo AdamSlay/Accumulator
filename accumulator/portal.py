@@ -5,7 +5,7 @@ import socket
 import pandas as pd
 
 from accumulator.environment import STATION_PARAMETERS, DATASERVER_DATASET, DATASERVER_IP, \
-    DATASERVER_PORT, DATASERVER_REQ_TYPE, DATE_TIME
+    DATASERVER_PORT, DATASERVER_REQ_TYPE, DATE_TIME, DATASERVER_TIMEOUT
 
 log = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def fetch_station_data():
     try:
         # Create a socket object and connect to DataServer
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(10)
+            sock.settimeout(DATASERVER_TIMEOUT)
             sock.connect((DATASERVER_IP, DATASERVER_PORT))
             log.debug("Connected to DataServer")
 
