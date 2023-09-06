@@ -23,17 +23,17 @@ def fetch_station_data():
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(10)
             sock.connect((DATASERVER_IP, DATASERVER_PORT))
-            log.debug("Connected to DataServer")  # New log statement
+            log.debug("Connected to DataServer")
 
             query = build_query()
             request_bytes = json.dumps(query).encode('utf-8')
-            log.debug("Sending request")  # New log statement
+            log.debug("Sending request")
             sock.sendall(request_bytes)
 
             # Receive the response
-            log.debug("Receiving response")  # New log statement
+            log.debug("Receiving response")
             response = receive_response(sock)
-            log.debug("Response received")  # New log statement
+            log.debug("Response received")
             log_connection_status(response)
 
         # Convert the response to a DataFrame
