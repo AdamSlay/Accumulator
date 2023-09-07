@@ -4,3 +4,9 @@ This is a simple application designed to be run on a schedule and calculate the 
 The model used is the Utah Model (Richardson et al. 1974) and resulting data are stored in NetCDF format. This application could
 potentially expand to include other accumulation models for other crops such as Grape Black Rot or Peanut Leaf Spot. The intention is 
 for this model to run in AWS Fargate on a schedule and store the resulting data in a NetCDF4 dataset via EFS.
+
+
+command for building amd64 image:
+```bash
+docker buildx build --platform linux/amd64 -t sysdev/pyaccumulator .
+```
