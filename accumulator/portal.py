@@ -48,20 +48,23 @@ def fetch_station_data():
         raise
     except Exception as e:
         log.error(f"An error occurred while fetching station data: {e}")
-        raise    
+        raise
 
 
-def build_query():
+def build_query(ds_req_type=DATASERVER_REQ_TYPE,
+                ds_dataset=DATASERVER_DATASET,
+                ds_date=DATE_TIME,
+                ds_variables=STATION_PARAMETERS):
     """
     Build the query to send to the DataServer based on the environment variables
 
     :return: The query as a JSON object
     """
     return {
-        "type": DATASERVER_REQ_TYPE,
-        "dataset": DATASERVER_DATASET,
-        "date": DATE_TIME,
-        "variables": STATION_PARAMETERS,
+        "type": ds_req_type,
+        "dataset": ds_dataset,
+        "date": ds_date,
+        "variables": ds_variables,
     }
 
 
