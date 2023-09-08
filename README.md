@@ -12,7 +12,8 @@ AWS Lambda requires containers to be built using amd64 architecture and to have 
 ## Building
 
 After building, the image must be tagged and pushed to ECR. From ECR, Lambda can pull the image and use it in a function. The application requires access to DataServer for pulling data from various Mesonet datasets and EFS for storing the Accumulator dataset.
-command for building amd64 image:
+
+Command for building amd64 image:
 ```bash
 docker buildx build --platform linux/amd64 -t sysdev/pyaccumulator .
 ```
