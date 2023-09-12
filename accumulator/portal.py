@@ -10,7 +10,7 @@ from accumulator.environment import STATION_PARAMETERS, DATASERVER_DATASET, DATA
 log = logging.getLogger(__name__)
 
 
-def fetch_station_data():
+def fetch_station_data() -> pd.DataFrame:
     """
     Fetch the latest tair data from DataServer at the top of the hour for each station
 
@@ -54,7 +54,7 @@ def fetch_station_data():
 def build_query(ds_req_type=DATASERVER_REQ_TYPE,
                 ds_dataset=DATASERVER_DATASET,
                 ds_date=DATE_TIME,
-                ds_variables=STATION_PARAMETERS):
+                ds_variables=STATION_PARAMETERS) -> dict[str, any]:
     """
     Build the query to send to the DataServer based on the environment variables
 
@@ -68,7 +68,7 @@ def build_query(ds_req_type=DATASERVER_REQ_TYPE,
     }
 
 
-def receive_response(sock):
+def receive_response(sock: socket.socket) -> dict[str, any]:
     """
     Receive the response from the DataServer in chunks of 1024 bytes and return the response as a JSON object
 
@@ -84,7 +84,7 @@ def receive_response(sock):
     return json.loads(response_bytes.decode('utf-8'))
 
 
-def log_connection_status(response):
+def log_connection_status(response: dict[str, any]) -> None:
     """
     Log the connection status based on the response from the DataServer
     :param response: The response from the DataServer
@@ -97,7 +97,7 @@ def log_connection_status(response):
         raise ConnectionError(f"Failed to connect to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
 
 
-def convert_resp_to_df(response):
+def convert_resp_to_df(response: dict[str, any]) -> pd.DataFrame:
     """
     Convert the response from the DataServer to a pandas DataFrame
 

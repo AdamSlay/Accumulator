@@ -12,7 +12,7 @@ MODEL_FUNCTIONS = {
 }
 
 
-def run_models(station_data: pd.DataFrame):
+def run_models(station_data: pd.DataFrame) -> pd.DataFrame:
     """
     Run the selected models and return the updated accumulation
 

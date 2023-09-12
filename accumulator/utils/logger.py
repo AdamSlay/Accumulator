@@ -4,7 +4,7 @@ import sys
 from accumulator.environment import LOG_LEVEL
 
 
-def init_logging():
+def init_logging() -> None:
     """
         *IMPORTANT*
         This basicConfig only works if the container is run locally.
@@ -23,7 +23,7 @@ def init_logging():
     logging.getLogger().setLevel(LOG_LEVEL)  # Set root logger level
 
 
-def print_logging_config(name: str):
+def print_logging_config(name: str) -> None:
     """
     Debug tool to figure out where the logging level changes
     :param name: Name of the location in the code where the logging level is being checked
