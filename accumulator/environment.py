@@ -14,7 +14,7 @@ DATE_TIME = now_utc.strftime('%Y-%m-%d %H:00:00')
 
 # ENVIRONMENT VARIABLES
 ACCUM_DATASET_PATH = os.environ.get('ACCUM_DATASET_PATH', 'default_path')
-DATASERVER_IP = os.environ.get('DATASERVER_IP', 'default_ip')
+DATASERVER_HOST = os.environ.get('DATASERVER_HOST', 'default_ip')
 DATASERVER_PORT = int(os.environ.get('DATASERVER_PORT', 0))
 
 # CONFIG 

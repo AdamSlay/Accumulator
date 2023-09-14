@@ -7,7 +7,7 @@ from accumulator.utils.logger import init_logging
 from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_station_data
-from accumulator.environment import ACCUM_DATASET_PATH, LOG_PATH
+from accumulator.environment import ACCUM_DATASET_PATH, LOG_PATH, DATASERVER_HOST
 
 
 def main(event=None, context=None):
@@ -17,7 +17,7 @@ def main(event=None, context=None):
     log.info("Starting accumulator")
 
     try:
-        ip_address = socket.gethostbyname('portal.dev.okmeso.net')
+        ip_address = socket.gethostbyname(DATASERVER_HOST)
         log.debug(f'IP address of portal.dev.okmeso.net is {ip_address}')
     except socket.gaierror as e:
         log.error(f'Failed to get IP address of portal.dev.okmeso.net: {e}')

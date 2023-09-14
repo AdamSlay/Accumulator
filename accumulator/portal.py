@@ -4,7 +4,7 @@ import socket
 
 import pandas as pd
 
-from accumulator.environment import STATION_PARAMETERS, DATASERVER_DATASET, DATASERVER_IP, \
+from accumulator.environment import STATION_PARAMETERS, DATASERVER_DATASET, DATASERVER_HOST, \
     DATASERVER_PORT, DATASERVER_REQ_TYPE, DATE_TIME, DATASERVER_TIMEOUT
 
 log = logging.getLogger(__name__)
@@ -16,13 +16,13 @@ def fetch_station_data() -> pd.DataFrame:
 
     :return: pandas DataFrame of the latest tair data
     """
-    log.info(f"Connecting to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
+    log.info(f"Connecting to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
 
     try:
         # Create a socket object and connect to DataServer
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(DATASERVER_TIMEOUT)
-            sock.connect((DATASERVER_IP, DATASERVER_PORT))
+            sock.connect((DATASERVER_HOST, DATASERVER_PORT))
             log.debug("Connected to DataServer")
 
             query = build_query()
@@ -91,10 +91,10 @@ def log_connection_status(response: dict[str, any]) -> None:
     :return: None
     """
     if response['success']:
-        log.info(f"Successfully connected to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
+        log.info(f"Successfully connected to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
     else:
-        log.error(f"Failed to connect to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
-        raise ConnectionError(f"Failed to connect to DataServer at {DATASERVER_IP}:{DATASERVER_PORT}")
+        log.error(f"Failed to connect to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
+        raise ConnectionError(f"Failed to connect to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
 
 
 def convert_resp_to_df(response: dict[str, any]) -> pd.DataFrame:
