@@ -20,7 +20,7 @@ def main(event=None, context=None):
         ip_address = socket.gethostbyname(DATASERVER_HOST)
         log.debug(f'IP address of portal.dev.okmeso.net is {ip_address}')
     except socket.gaierror as e:
-        log.error(f'Failed to get IP address of portal.dev.okmeso.net: {e}')
+        log.critical(f'Failed to get IP address of portal.dev.okmeso.net: {e}')
         return {
             'statusCode': 500,
             'body': 'Failed to get IP address of portal.dev.okmeso.net'
@@ -32,19 +32,19 @@ def main(event=None, context=None):
         write_ncdf(updated_accum_data)
 
     except (socket.error, json.JSONDecodeError) as e:
-        log.error(f"An error occurred while fetching station data or processing the response: {e}")
+        log.critical(f"An error occurred while fetching station data or processing the response: {e}")
         return {
             'statusCode': 500,
             'body': 'A socket error occurred'
         }
     except (PermissionError, OSError, FileNotFoundError) as e:
-        log.error(f"An error occurred while accessing or modifying the NetCDF4 dataset at {ACCUM_DATASET_PATH}: {e}")
+        log.critical(f"An error occurred while accessing or modifying the NetCDF4 dataset at {ACCUM_DATASET_PATH}: {e}")
         return {
             'statusCode': 500,
             'body': 'A file error occurred'
         }
     except Exception as e:
-        log.error(f"An unexpected error occurred. Please check the logs at {LOG_PATH} for more details: {e}")
+        log.critical(f"An unexpected error occurred. Please check the logs at {LOG_PATH} for more details: {e}")
         return {
             'statusCode': 500,
             'body': 'An unexpected error occurred'
