@@ -17,6 +17,16 @@ def main(event=None, context=None):
     log.info("Starting accumulator")
 
     try:
+        ip_address = socket.gethostbyname('portal.dev.okmeso.net')
+        log.debug(f'IP address of portal.dev.okmeso.net is {ip_address}')
+    except socket.gaierror as e:
+        log.error(f'Failed to get IP address of portal.dev.okmeso.net: {e}')
+        return {
+            'statusCode': 500,
+            'body': 'Failed to get IP address of portal.dev.okmeso.net'
+        }
+
+    try:
         station_obs_data = fetch_station_data()
         updated_accum_data = run_models(station_obs_data)
         write_ncdf(updated_accum_data)
