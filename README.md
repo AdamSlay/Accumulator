@@ -7,7 +7,7 @@ potentially expand to include other accumulation models such as Grape Black Rot 
 for this model to run in AWS Lambda on an hourly schedule and store the resulting data in a NetCDF4 dataset via EFS.
 
 
-AWS Lambda requires containers to be built using amd64 architecture and to have the Lambda Runtime Environment installed inside the container. To initialize the function inside the container, set the location of the Lambda Runtime Environment as the ENTRYPOINT in your Dockerfile, and the function handler as your CMD. The function handler must take two arguments, _**event**_ and _**context**_. The _**event**_ is a json object that triggers the function, and the _**context**_ "provides methods and properties that provide information about the invocation, function, and execution environment"(per the AWS docs).
+AWS Lambda requires containers to be built using amd64 architecture and to have the Lambda Runtime Environment installed inside the container. To initialize the function inside the container, set the location of the Lambda Runtime Environment as the ENTRYPOINT in your Dockerfile, and the function handler as your CMD. The function handler must take two arguments, _**event**_ and _**context**_. The _**event**_ is a json object that triggers the function, and the _**context**_ "provides methods and properties that provide information about the invocation, function, and execution environment"([per the AWS docs](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-context.html)).
 
 ## Building
 
