@@ -33,6 +33,7 @@ class Config:
         self.CHILL_HOURS_VAR = config['settings'].get('CHILL_HOURS_VAR', 'chill_hours')
         self.DATASERVER_DATASET = config['settings'].get('DATASERVER_DATASET', 'edu.ou.mesonet.standard')
         self.DATASERVER_REQ_TYPE = config['settings'].get('DATASERVER_REQ_TYPE', 'map-netcdf')
+        self.SOCKET_ATTEMPTS = config['settings'].get('SOCKET_ATTEMPTS', 3)
         self.DATASERVER_TIMEOUT = config['settings'].get('DATASERVER_TIMEOUT', 30)
         self.MODELS_TO_RUN = config['settings'].get('MODELS_TO_RUN', [])
         self.STATION_PARAMETERS = config['settings'].get('STATION_PARAMETERS', [])

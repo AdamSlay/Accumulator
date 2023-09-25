@@ -3,6 +3,7 @@ LOG_LEVEL = "INFO"
 LOG_PATH = "/tmp/accumulator.log"
 DATASERVER_REQ_TYPE = "map-netcdf"
 DATASERVER_DATASET = "edu.ou.mesonet.standard"
+SOCKET_ATTEMPTS = 3
 DATASERVER_TIMEOUT = 10
 CHILL_HOURS_VAR = "chill_hours"
 MODELS_TO_RUN = ["chill_hours"]

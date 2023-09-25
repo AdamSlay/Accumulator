@@ -14,37 +14,44 @@ def fetch_station_data() -> pd.DataFrame:
     """
     logger.log.info(f"Connecting to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
 
-    try:
-        # Create a socket object and connect to DataServer
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(config.DATASERVER_TIMEOUT)
-            sock.connect((config.DATASERVER_HOST, config.DATASERVER_PORT))
-            logger.log.debug("Connected to DataServer")
+    for attempt in range(config.SOCKET_ATTEMPTS):  # Retry 3 times
+        try:
+            # Create a socket object and connect to DataServer
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(config.DATASERVER_TIMEOUT)
+                sock.connect((config.DATASERVER_HOST, config.DATASERVER_PORT))
+                logger.log.debug("Connected to DataServer")
 
-            query = build_query()
-            request_bytes = json.dumps(query).encode('utf-8')
-            logger.log.debug("Sending request")
-            sock.sendall(request_bytes)
+                query = build_query()
+                request_bytes = json.dumps(query).encode('utf-8')
+                logger.log.debug("Sending request")
+                sock.sendall(request_bytes)
 
-            # Receive the response
-            logger.log.debug("Receiving response")
-            response = receive_response(sock)
-            logger.log.debug("Response received")
-            log_connection_status(response)
+                # Receive the response
+                logger.log.debug("Receiving response")
+                response = receive_response(sock)
+                logger.log.debug("Response received")
+                log_connection_status(response)
 
-        # Convert the response to a DataFrame
-        data = convert_resp_to_df(response)
-        return data
+            # Convert the response to a DataFrame
+            data = convert_resp_to_df(response)
+            return data  # If the connection was successful, return the data and exit the loop
 
-    except socket.error as e:
-        logger.log.error(f"A socket error occurred while fetching station data: {e}")
-        raise
-    except json.JSONDecodeError as e:
-        logger.log.error(f"A JSON decode error occurred while parsing the response: {e}")
-        raise
-    except Exception as e:
-        logger.log.error(f"An error occurred while fetching station data: {e}")
-        raise
+        except socket.error as e:
+            if attempt < (config.SOCKET_ATTEMPTS - 1):
+                # If this was not the last attempt, log the error and continue
+                logger.log.warning(f"Connection Attempt {attempt} of {config.SOCKET_ATTEMPTS}: A socket error occurred while fetching station data: {e}")
+                continue
+            else:
+                # If this was the last attempt, log the error and raise the exception
+                logger.log.error(f"A socket error occurred while fetching station data: {e}")
+                raise
+        except json.JSONDecodeError as e:
+            logger.log.error(f"A JSON decode error occurred while parsing the response: {e}")
+            raise
+        except Exception as e:
+            logger.log.error(f"An error occurred while fetching station data: {e}")
+            raise
 
 
 def build_query(ds_req_type=config.DATASERVER_REQ_TYPE,
