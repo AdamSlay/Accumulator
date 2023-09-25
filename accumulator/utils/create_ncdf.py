@@ -4,10 +4,10 @@ import pandas as pd
 from netCDF4 import date2num
 from datetime import datetime, timedelta
 
-from accumulator.environment import ACCUM_DATASET_PATH
+from accumulator import config
 
 
-def create_dataset(file_path=ACCUM_DATASET_PATH):
+def create_dataset(file_path=config.ACCUM_DATASET_PATH):
     # Define the path and create the file
     csv_file_path = 'accumulator/utils/latest_tair.csv'
     df = pd.read_csv(csv_file_path)

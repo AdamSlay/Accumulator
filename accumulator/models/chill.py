@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 
-from accumulator.environment import CHILL_HOURS_VAR
+from accumulator import config
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
             logger.debug(f"Calculating chill hours for {station.name}: {tair}")
         except ValueError:
             logger.error(f"Invalid temperature value for {station.name}: {station['tair']}")
-            stations.loc[index, CHILL_HOURS_VAR] = 0.0
+            stations.loc[index, config.CHILL_HOURS_VAR] = 0.0
             continue
        
         # for now there is only the one model
@@ -78,7 +78,7 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
         else:
             new_chill_hours = utah_model(tair, str(station.name))
 
-        stations.loc[index, CHILL_HOURS_VAR] = new_chill_hours
+        stations.loc[index, config.CHILL_HOURS_VAR] = new_chill_hours
         logger.debug(f"New chill hours for {station.name}: {new_chill_hours}")
     
     logger.debug("Finished calculating chill hours")

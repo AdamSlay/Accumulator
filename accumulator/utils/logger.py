@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from accumulator.environment import LOG_LEVEL
+from accumulator import config
 
 
 def init_logging() -> None:
@@ -13,14 +13,14 @@ def init_logging() -> None:
     """
     handler = logging.StreamHandler(sys.stdout)
     logging.basicConfig(
-        level=LOG_LEVEL,
+        level=config.LOG_LEVEL,
         format='%(asctime)s|%(levelname)s|%(name)s|%(message)s',
         datefmt='%Y-%m-%d %H:%M:%S,%f',
         handlers=[handler]
     )
     # This will set the root logger level to LOG_LEVEL regardless of whether the 
     # container is running in AWS or locally
-    logging.getLogger().setLevel(LOG_LEVEL)  # Set root logger level
+    logging.getLogger().setLevel(config.LOG_LEVEL)  # Set root logger level
 
 
 def print_logging_config(name: str) -> None:

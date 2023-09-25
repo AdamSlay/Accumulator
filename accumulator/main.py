@@ -3,11 +3,11 @@ import logging
 import socket
 import json
 
+from accumulator import config
 from accumulator.utils.logger import init_logging
 from accumulator.model_run import run_models
 from accumulator.ncdf_update import write_ncdf
 from accumulator.portal import fetch_station_data
-from accumulator.environment import ACCUM_DATASET_PATH, LOG_PATH, DATASERVER_HOST
 
 
 def main(event=None, context=None):
@@ -17,13 +17,13 @@ def main(event=None, context=None):
     log.info("Starting accumulator")
 
     try:
-        ip_address = socket.gethostbyname(DATASERVER_HOST)
-        log.debug(f'Resolved IP address for \'{DATASERVER_HOST}\': {ip_address}')
+        ip_address = socket.gethostbyname(config.DATASERVER_HOST)
+        log.debug(f'Resolved IP address for \'{config.DATASERVER_HOST}\': {ip_address}')
     except socket.gaierror as e:
-        log.critical(f'Failed to resolve IP address for \'{DATASERVER_HOST}\': {e}')
+        log.critical(f'Failed to resolve IP address for \'{config.DATASERVER_HOST}\': {e}')
         return {
             'statusCode': 500,
-            'body': f'Failed to resolve IP address for \'{DATASERVER_HOST}\': {e}'
+            'body': f'Failed to resolve IP address for \'{config.DATASERVER_HOST}\': {e}'
         }
 
     try:
@@ -38,7 +38,7 @@ def main(event=None, context=None):
             'body': f'A socket error occurred: {e}'
         }
     except (PermissionError, OSError, FileNotFoundError) as e:
-        log.critical(f"An error occurred while accessing or modifying the NetCDF4 dataset at {ACCUM_DATASET_PATH}: {e}")
+        log.critical(f"An error occurred while accessing or modifying the NetCDF4 dataset at {config.ACCUM_DATASET_PATH}: {e}")
         return {
             'statusCode': 500,
             'body': f'A file error occurred: {e}'

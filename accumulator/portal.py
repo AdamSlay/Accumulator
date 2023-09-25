@@ -4,8 +4,7 @@ import socket
 
 import pandas as pd
 
-from accumulator.environment import STATION_PARAMETERS, DATASERVER_DATASET, DATASERVER_HOST, \
-    DATASERVER_PORT, DATASERVER_REQ_TYPE, DATE_TIME, DATASERVER_TIMEOUT
+from accumulator import config
 
 log = logging.getLogger(__name__)
 
@@ -16,13 +15,13 @@ def fetch_station_data() -> pd.DataFrame:
 
     :return: pandas DataFrame of the latest tair data
     """
-    log.info(f"Connecting to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
+    log.info(f"Connecting to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
 
     try:
         # Create a socket object and connect to DataServer
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(DATASERVER_TIMEOUT)
-            sock.connect((DATASERVER_HOST, DATASERVER_PORT))
+            sock.settimeout(config.DATASERVER_TIMEOUT)
+            sock.connect((config.DATASERVER_HOST, config.DATASERVER_PORT))
             log.debug("Connected to DataServer")
 
             query = build_query()
@@ -51,10 +50,10 @@ def fetch_station_data() -> pd.DataFrame:
         raise
 
 
-def build_query(ds_req_type=DATASERVER_REQ_TYPE,
-                ds_dataset=DATASERVER_DATASET,
-                ds_date=DATE_TIME,
-                ds_variables=STATION_PARAMETERS) -> dict[str, any]:
+def build_query(ds_req_type=config.DATASERVER_REQ_TYPE,
+                ds_dataset=config.DATASERVER_DATASET,
+                ds_date=config.DATE_TIME,
+                ds_variables=config.STATION_PARAMETERS) -> dict[str, any]:
     """
     Build the query to send to the DataServer based on the environment variables
 
@@ -91,10 +90,10 @@ def log_connection_status(response: dict[str, any]) -> None:
     :return: None
     """
     if response['success']:
-        log.info(f"Successfully connected to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
+        log.info(f"Successfully connected to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
     else:
-        log.error(f"Failed to connect to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
-        raise ConnectionError(f"Failed to connect to DataServer at {DATASERVER_HOST}:{DATASERVER_PORT}")
+        log.error(f"Failed to connect to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
+        raise ConnectionError(f"Failed to connect to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
 
 
 def convert_resp_to_df(response: dict[str, any]) -> pd.DataFrame:

@@ -5,7 +5,7 @@ import numpy as np
 import os
 import pandas as pd
 
-from accumulator.environment import ACCUM_DATASET_PATH, CHILL_HOURS_VAR
+from accumulator import config
 from accumulator.utils.create_ncdf import create_dataset
 
 log = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def chill_hours_update_func(existing_values: pd.DataFrame, updates: pd.DataFrame
 
 # Function Map for updating the NetCDF4 file with each model
 UPDATE_FUNCTIONS = {
-    CHILL_HOURS_VAR: chill_hours_update_func
+    config.CHILL_HOURS_VAR: chill_hours_update_func
 }
 
 
@@ -78,23 +78,23 @@ def open_ncdf() -> nc.Dataset:
     :return: NetCDF4 dataset
     """
 
-    if not os.path.isfile(ACCUM_DATASET_PATH):
-        log.warning(f"NetCDF4 file not found at {ACCUM_DATASET_PATH}")
+    if not os.path.isfile(config.ACCUM_DATASET_PATH):
+        log.warning(f"NetCDF4 file not found at {config.ACCUM_DATASET_PATH}")
 
         try:
-            log.info(f"Creating NetCDF4 file at {ACCUM_DATASET_PATH}")
-            create_dataset(ACCUM_DATASET_PATH)
+            log.info(f"Creating NetCDF4 file at {config.ACCUM_DATASET_PATH}")
+            create_dataset(config.ACCUM_DATASET_PATH)
         except (PermissionError, OSError) as e:
             log.error(f"An error occurred while creating the NetCDF4 file: {e}")
             raise
 
     try:
-        ncdf_dataset = nc.Dataset(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
+        ncdf_dataset = nc.Dataset(config.ACCUM_DATASET_PATH, 'a', format='NETCDF4')
     except PermissionError as e:
-        log.error(f"Permission denied for {ACCUM_DATASET_PATH}: {e}")
+        log.error(f"Permission denied for {config.ACCUM_DATASET_PATH}: {e}")
         raise
     except OSError as e:
-        log.error(f"OS error occurred while opening {ACCUM_DATASET_PATH}: {e}")
+        log.error(f"OS error occurred while opening {config.ACCUM_DATASET_PATH}: {e}")
         raise
 
     return ncdf_dataset
@@ -107,7 +107,7 @@ def write_ncdf(updated_accumulation: pd.DataFrame, update_functions: dict[str, c
     :param update_functions: A dictionary mapping variable names to update functions
     :return: None
     """
-    log.info(f"Writing data to NetCDF4 file: {ACCUM_DATASET_PATH}")
+    log.info(f"Writing data to NetCDF4 file: {config.ACCUM_DATASET_PATH}")
 
     if update_functions is None:
         update_functions = UPDATE_FUNCTIONS
