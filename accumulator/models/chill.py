@@ -1,9 +1,6 @@
-import logging
 import pandas as pd
 
-from accumulator import config
-
-logger = logging.getLogger(__name__)
+from accumulator import config, logger
 
 
 def utah_model(tair: float, stid: str) -> float:
@@ -45,7 +42,7 @@ def utah_model(tair: float, stid: str) -> float:
         accumulated = -1.0
 
     else:
-        logger.warning(f"Invalid tair value for {stid}: {tair}")
+        logger.log.warning(f"Invalid tair value for {stid}: {tair}")
         accumulated = 0.0
 
     return accumulated
@@ -61,14 +58,14 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
 
     # TODO: allow for different models to be used based on model config in Accumulator/etc/config/chill_hours.yaml
     model = 'utah'
-    logger.debug(f"Calculating chill hours using {model} model")
+    logger.log.debug(f"Calculating chill hours using {model} model")
     
     for index, station in stations.iterrows():
         try:
             tair = float(station['tair'])
-            logger.debug(f"Calculating chill hours for {station.name}: {tair}")
+            logger.log.debug(f"Calculating chill hours for {station.name}: {tair}")
         except ValueError:
-            logger.error(f"Invalid temperature value for {station.name}: {station['tair']}")
+            logger.log.error(f"Invalid temperature value for {station.name}: {station['tair']}")
             stations.loc[index, config.CHILL_HOURS_VAR] = 0.0
             continue
        
@@ -79,7 +76,7 @@ def calculate_chill_hours(stations: pd.DataFrame) -> pd.DataFrame:
             new_chill_hours = utah_model(tair, str(station.name))
 
         stations.loc[index, config.CHILL_HOURS_VAR] = new_chill_hours
-        logger.debug(f"New chill hours for {station.name}: {new_chill_hours}")
+        logger.log.debug(f"New chill hours for {station.name}: {new_chill_hours}")
     
-    logger.debug("Finished calculating chill hours")
+    logger.log.debug("Finished calculating chill hours")
     return stations

@@ -3,7 +3,7 @@ import numpy as np
 import netCDF4 as nc
 from unittest import mock
 
-from accumulator.environment import ACCUM_DATASET_PATH
+from accumulator import config
 from accumulator.ncdf_update import chill_hours_update_func, open_ncdf, write_ncdf, set_time_stamp, \
     route_var_to_update_func
 
@@ -49,7 +49,7 @@ def test_open_ncdf(mock_nc_dataset, mock_isfile):
 
     result = open_ncdf()
 
-    mock_nc_dataset.assert_called_once_with(ACCUM_DATASET_PATH, 'a', format='NETCDF4')
+    mock_nc_dataset.assert_called_once_with(config.ACCUM_DATASET_PATH, 'a', format='NETCDF4')
     assert result == 'mock dataset'
 
 

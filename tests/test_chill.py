@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from accumulator.environment import CHILL_HOURS_VAR
+from accumulator import config
 from accumulator.models.chill import calculate_chill_hours, utah_model
 
 
@@ -36,11 +36,11 @@ def test_calculate_chill_hours():
     result = calculate_chill_hours(stations)
 
     # Check that the returned DataFrame has the expected structure
-    assert CHILL_HOURS_VAR in result.columns
+    assert config.CHILL_HOURS_VAR in result.columns
     assert len(result) == len(stations)
 
     # Check that the returned DataFrame has the expected values
-    assert result[CHILL_HOURS_VAR].iloc[0] == 0.0  # 10 degrees should result in 0.0 chill hours
-    assert result[CHILL_HOURS_VAR].iloc[1] == 0.0  # 'invalid' temperature should result in 0.0 chill hours
-    assert result[CHILL_HOURS_VAR].iloc[2] == 0.5  # 35 degrees should result in 0.5 chill hours
-    assert result[CHILL_HOURS_VAR].iloc[3] == -1.0  # 67 degrees should result in -1.0 chill hours
+    assert result[config.CHILL_HOURS_VAR].iloc[0] == 0.0  # 10 degrees should result in 0.0 chill hours
+    assert result[config.CHILL_HOURS_VAR].iloc[1] == 0.0  # 'invalid' temperature should result in 0.0 chill hours
+    assert result[config.CHILL_HOURS_VAR].iloc[2] == 0.5  # 35 degrees should result in 0.5 chill hours
+    assert result[config.CHILL_HOURS_VAR].iloc[3] == -1.0  # 67 degrees should result in -1.0 chill hours

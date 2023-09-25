@@ -1,12 +1,9 @@
 import json
-import logging
 import socket
 
 import pandas as pd
 
-from accumulator import config
-
-log = logging.getLogger(__name__)
+from accumulator import config, logger
 
 
 def fetch_station_data() -> pd.DataFrame:
@@ -15,24 +12,24 @@ def fetch_station_data() -> pd.DataFrame:
 
     :return: pandas DataFrame of the latest tair data
     """
-    log.info(f"Connecting to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
+    logger.log.info(f"Connecting to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
 
     try:
         # Create a socket object and connect to DataServer
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(config.DATASERVER_TIMEOUT)
             sock.connect((config.DATASERVER_HOST, config.DATASERVER_PORT))
-            log.debug("Connected to DataServer")
+            logger.log.debug("Connected to DataServer")
 
             query = build_query()
             request_bytes = json.dumps(query).encode('utf-8')
-            log.debug("Sending request")
+            logger.log.debug("Sending request")
             sock.sendall(request_bytes)
 
             # Receive the response
-            log.debug("Receiving response")
+            logger.log.debug("Receiving response")
             response = receive_response(sock)
-            log.debug("Response received")
+            logger.log.debug("Response received")
             log_connection_status(response)
 
         # Convert the response to a DataFrame
@@ -40,13 +37,13 @@ def fetch_station_data() -> pd.DataFrame:
         return data
 
     except socket.error as e:
-        log.error(f"A socket error occurred while fetching station data: {e}")
+        logger.log.error(f"A socket error occurred while fetching station data: {e}")
         raise
     except json.JSONDecodeError as e:
-        log.error(f"A JSON decode error occurred while parsing the response: {e}")
+        logger.log.error(f"A JSON decode error occurred while parsing the response: {e}")
         raise
     except Exception as e:
-        log.error(f"An error occurred while fetching station data: {e}")
+        logger.log.error(f"An error occurred while fetching station data: {e}")
         raise
 
 
@@ -90,9 +87,9 @@ def log_connection_status(response: dict[str, any]) -> None:
     :return: None
     """
     if response['success']:
-        log.info(f"Successfully connected to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
+        logger.log.info(f"Successfully connected to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
     else:
-        log.error(f"Failed to connect to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
+        logger.log.error(f"Failed to connect to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
         raise ConnectionError(f"Failed to connect to DataServer at {config.DATASERVER_HOST}:{config.DATASERVER_PORT}")
 
 

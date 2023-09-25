@@ -2,8 +2,8 @@ import json
 from unittest.mock import MagicMock
 import pandas as pd
 
-from accumulator.portal import convert_resp_to_df
 from accumulator import portal
+from accumulator.portal import convert_resp_to_df
 
 
 def test_fetch_station_data(monkeypatch):

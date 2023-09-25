@@ -1,37 +1,22 @@
 import logging
 import sys
 
-from accumulator import config
 
+class Logger:
+    _instance = None
 
-def init_logging() -> None:
-    """
-        *IMPORTANT*
-        This basicConfig only works if the container is run locally.
-        If the container is run on AWS, the logging config will be set automatically by the AWS Lambda Python runtime
-        which will render the basicConfig useless.
-    """
-    handler = logging.StreamHandler(sys.stdout)
-    logging.basicConfig(
-        level=config.LOG_LEVEL,
-        format='%(asctime)s|%(levelname)s|%(name)s|%(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S,%f',
-        handlers=[handler]
-    )
-    # This will set the root logger level to LOG_LEVEL regardless of whether the 
-    # container is running in AWS or locally
-    logging.getLogger().setLevel(config.LOG_LEVEL)  # Set root logger level
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Logger, cls).__new__(cls)
+            cls._instance._initialize()
+        return cls._instance
 
+    def _initialize(self):
+        from accumulator import config
 
-def print_logging_config(name: str) -> None:
-    """
-    Debug tool to figure out where the logging level changes
-    :param name: Name of the location in the code where the logging level is being checked
-    :return: None
-    """
-    root_logger = logging.getLogger()
-    root_level = logging.getLevelName(root_logger.getEffectiveLevel())
-    print(f"The root log level before {name} is {root_level}")
-    for handler in root_logger.handlers:
-        handler_level = logging.getLevelName(handler.level)
-        print(f"A root handler has level {handler_level}")
+        handler = logging.StreamHandler(sys.stdout)
+        self.log = logging.getLogger(__name__)
+        self.log.setLevel(config.LOG_LEVEL)
+        self.log.addHandler(handler)
+        formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(name)s|%(message)s', datefmt='%Y-%m-%d %H:%M:%S,%f')
+        handler.setFormatter(formatter)
