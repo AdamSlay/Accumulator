@@ -32,11 +32,17 @@ def main(event=None, context=None):
             'statusCode': 500,
             'body': f'A socket error occurred: {e}'
         }
-    except (PermissionError, OSError, FileNotFoundError) as e:
+    except (PermissionError, OSError) as e:
         logger.log.critical(f"An error occurred while accessing or modifying the NetCDF4 dataset at {config.ACCUM_DATASET_PATH}: {e}")
         return {
             'statusCode': 500,
-            'body': f'A file error occurred: {e}'
+            'body': f'An OS error occurred: {e}'
+        }
+    except FileNotFoundError as e:
+        logger.log.critical(f"One or more required files were not found: {e}")
+        return {
+            'statusCode': 500,
+            'body': f'One or more required files were not found: {e}'
         }
     except Exception as e:
         logger.log.critical(f"An unexpected error occurred: {e}")

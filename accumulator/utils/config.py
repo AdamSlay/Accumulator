@@ -7,17 +7,25 @@ import pytz
 
 class Config:
     def __init__(self):
-        # Load variables from .env file
-        load_dotenv()
+        # Check if .env file exists
+        if os.path.exists('.env'):
+            load_dotenv()
+        elif os.path.exists('.env.example'):
+            load_dotenv('.env.example')
+        else:
+            raise FileNotFoundError("The .env file was not found.")
 
         # Set environment variables as attributes
         for key, value in os.environ.items():
             setattr(self, key, self._convert_to_int(value))
 
-        # Load variables from config.toml file
-        config = toml.load('etc/config/config.toml')
-        for key, value in config['settings'].items():
-            setattr(self, key, self._convert_to_int(value))
+        # Check if config.toml file exists
+        if os.path.exists('etc/config/config.toml'):
+            config = toml.load('etc/config/config.toml')
+            for key, value in config['settings'].items():
+                setattr(self, key, self._convert_to_int(value))
+        else:
+            raise FileNotFoundError("The config.toml file was not found.")
 
         # Set the time stamp for the most recent hour
         now_utc = datetime.now(pytz.timezone('UTC'))
