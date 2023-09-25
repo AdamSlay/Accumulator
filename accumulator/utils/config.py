@@ -10,6 +10,7 @@ class Config:
         # Check if .env file exists
         if os.path.exists('.env'):
             load_dotenv()
+        # load example .env file if .env file does not exist(for testing)
         elif os.path.exists('.env.example'):
             load_dotenv('.env.example')
         else:
