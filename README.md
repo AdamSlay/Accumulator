@@ -26,4 +26,4 @@ docker buildx build --platform linux/amd64 -t sysdev/pyaccumulator .
 ```
 
 This repo synced from the following GitHub repo:
-```https://github.com/AdamSlay/Accumulator```
+https://github.com/AdamSlay/Accumulator
