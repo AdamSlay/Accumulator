@@ -1,17 +1,33 @@
-name: Sync to GitLab
+name: Test and Sync
 
 on: [push]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+    - name: Run tests
+      run: |
+        pytest
 
+  sync:
+    needs: test
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-
     - name: Push to GitLab
       env:
         GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
@@ -22,4 +38,3 @@ jobs:
         git config --global user.email "${GITLAB_USERNAME}@users.noreply.gitlab.com"
         git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_ACCESS_TOKEN}@git.mesonet.us/${GITLAB_USERNAME}/${GITLAB_REPO}
         git push --all gitlab
-        git push --tags gitlab
