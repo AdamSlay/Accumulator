@@ -19,5 +19,5 @@ jobs:
         git config --global user.name "${GITLAB_USERNAME}"
         git config --global user.email "${GITLAB_USERNAME}@users.noreply.gitlab.com"
         git remote add gitlab https://${GITLAB_USERNAME}:${GITLAB_ACCESS_TOKEN}@git.mesonet.us/${GITLAB_USERNAME}/${GITLAB_REPO}
-        git push --all gitlab --force
-        git push --tags gitlab --force
+        git push --all gitlab
+        git push --tags gitlab
